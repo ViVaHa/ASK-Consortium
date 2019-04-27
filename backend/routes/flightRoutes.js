@@ -39,7 +39,17 @@ router.post('/add/', (req,res) =>{
     });
   });
 
- 
+  router.put('/update', (req,res) =>{
+
+    
+    flightDetails.findOneAndUpdate({ name : req.body.name} ,{ available_seats : req.body.available_seats},   function(err, success){
+        if(err){
+          console.log(err);
+        }else{
+          res.status(200).json({"success" : true });
+        }
+    });
+  })
 
 
   
