@@ -2,7 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 5000;
+var cors = require('cors');
+const db = require('../keys').mongoURI;
+//console.log(db);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(cors());
 app.listen(port, () => console.log(`Listening on port ${port}`));
