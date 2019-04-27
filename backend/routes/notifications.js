@@ -4,7 +4,7 @@ const requestTracker = require('../models/requestTracker')
 
 router.get('/airlines/dashboard', (req, res)=>{
   let airline = req.body.airline;
-  requestTracker.find({$and : [{to_airline_name : airline}, {status:{$ne:"completed"}}]})
+  requestTracker.find({$and : [{to_airline_name : airline}, {status:{$eq:"request_sent"}}]})
   .then((pending)=>{
     res.status(200).json(pending);
   })

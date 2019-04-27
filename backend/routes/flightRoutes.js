@@ -56,12 +56,10 @@ router.post('/add/', (req,res) =>{
     flightDetails.findOne({$and : [{ airline_name : req.body.airline_name},{from : req.body.from}, {to: req.body.to},{available_seats : {$gt : 0}} ]},function(err,details){
         if(err){
             console.log(err);
-
         } else {
             if(details){
                 res.json(details);
             }
-
             else{
                 res.status(400).json({error:'No seat found', errorCode : 1});
             }
