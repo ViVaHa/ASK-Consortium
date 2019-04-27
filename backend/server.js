@@ -7,13 +7,14 @@ const mongoose = require('mongoose');
 const db = require('../keys').mongoURI;
 const airline = require("./routes/airlineRoutes");
 const flight = require("./routes/flightRoutes");
+const session = require('./routes/session');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api/airline", airline);
 app.use("/api/flight", flight);
-
+app.use("/session", session);
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 
