@@ -9,6 +9,7 @@ const airline = require("./routes/airlineRoutes");
 const flight = require("./routes/flightRoutes");
 const session = require('./routes/session');
 const ticket = require("./routes/ticketRoutes");
+const requestTracker = require("./routes/requestTrackerRoutes");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -17,6 +18,7 @@ app.use("/api/airline", airline);
 app.use("/api/flight", flight);
 app.use("/session", session);
 app.use("/api/ticket", ticket);
+app.use("/api/changeFlights", requestTracker);
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 
