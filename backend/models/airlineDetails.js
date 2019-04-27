@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let airlineDetailsSchema = new Schema({
-    airlineDetails_name:{
+    name:{
         type:String
     },
     
