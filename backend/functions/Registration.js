@@ -14,7 +14,7 @@ module.exports = function validate(data){
     data.password="";
   }
   if(validator.isEmpty(data.airline)){
-    errors.airlinesID = "Airlines ID is empty";
+    errors.airline = "Airline is empty";
   }
   if(validator.isEmpty(data.agent)){
     errors.agent = "Agent name is empty";
