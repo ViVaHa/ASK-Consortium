@@ -21,9 +21,6 @@ const agentsSchema = new Schema({
 });
 
 let Agents={}
-Agents.agentA =  databases.connectionA.model('agents', agentsSchema);
-Agents.agentB =  databases.connectionB.model('agents', agentsSchema);
-
-
+Agents.agentConsortium =  databases.dbConsortium.model('agents', agentsSchema);
 
 module.exports = Agents;

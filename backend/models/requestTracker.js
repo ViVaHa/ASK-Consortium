@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const databases = require('../DBConnections').databases;
 
 let requestTrackerSchema = new Schema({
     from_airline_name :{
@@ -30,4 +31,9 @@ let requestTrackerSchema = new Schema({
 });
 
 
-module.exports = requestTracker =  mongoose.model('requestTracker', requestTrackerSchema);
+
+let requestTracker={}
+requestTracker.requestTrackerConsortium =  databases.dbConsortium.model('requestTracker', requestTrackerSchema);
+
+module.exports = requestTracker ;
+
