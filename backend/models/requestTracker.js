@@ -14,6 +14,12 @@ let requestTrackerSchema = new Schema({
     from_flight_name :{
         type:String
     },
+    from:{
+        type:String
+    },
+    to:{
+        type:String
+    },
     status:{
         type:String
     }

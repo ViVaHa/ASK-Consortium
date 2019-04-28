@@ -15,7 +15,9 @@ router.post('/add', (req,res) =>{
             from_airline_name : req.body.from_airline_name,
             from_flight_name: req.body.from_flight_name,
             to_airline_name : req.body.to_airline_name,
-            status : "To be Processed"
+            from:req.body.from,
+            to:req.body.to,
+            status : req.body.status
           });
           console.log(newrequestTracker);
           newrequestTracker.save()
@@ -37,6 +39,10 @@ router.post('/add', (req,res) =>{
         }
     });
   });
+
+
+  
+
 
   router.put('/update', (req,res) =>{
     console.log(req.query);
