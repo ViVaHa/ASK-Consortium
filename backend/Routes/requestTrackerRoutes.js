@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const key = require('../../keys');
-const requestTracker = require('../models/requestTracker')
+const requestTracker = require('../models/requestTracker').requestTrackerConsortium;
 
 router.post('/add', (req,res) =>{
     //console.log(req.body);
