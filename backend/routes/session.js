@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const validation = require('../functions/Registration');
-const Agent = require('../models/agents');
+const Agents = require('../models/agents');
 
 router.post('/register', function(req, res) {
   let {errors, isValid} = validation(req.body);
@@ -10,6 +10,12 @@ router.post('/register', function(req, res) {
   obj.airline = req.body.airline;
   obj.password = req.body.password;
   obj.status = "pending";
+
+
+
+  // if airline===a{
+  //  Agent = Agents.agentA;
+  // }
 
   if (Object.entries(errors).length === 0 && errors.constructor === Object) {
     Agent.findOne({airline: obj.airline}).then((agent) => {

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+const databases = require('../DBConnections').databases;
 
 const agentsSchema = new Schema({
   name:{
@@ -20,4 +20,10 @@ const agentsSchema = new Schema({
   }
 });
 
-module.exports = Agent = mongoose.model("agents", agentsSchema);
+let Agents={}
+Agents.agentA =  databases.connectionA.model('agents', agentsSchema);
+Agents.agentB =  databases.connectionB.model('agents', agentsSchema);
+
+
+
+module.exports = Agents;

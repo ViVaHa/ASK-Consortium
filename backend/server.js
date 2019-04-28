@@ -12,6 +12,7 @@ const ticket = require("./routes/ticketRoutes");
 const requestTracker = require("./routes/requestTrackerRoutes");
 const notifications = require('./routes/notifications');
 const admin = require('./routes/admin');
+const database = require('./DBConnections').database;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -26,8 +27,25 @@ app.use("/admin", admin);
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 
-mongoose.connect(db, {useNewUrlParser:true}).then(
-  () => {console.log("Connected to MongoDB")},
-  err => {console.error("Cannot connect to MongoDB")}
-);
-mongoose.set('useFindAndModify', false);
+
+
+//console.log(obj)
+
+
+
+
+
+
+// mongoose.connect(db, {useNewUrlParser:true}).then(
+//   () => {console.log("Connected to MongoDB")},
+//   err => {console.error("Cannot connect to MongoDB")}
+// );
+// mongoose.set('useFindAndModify', false);
+//
+//
+// process.on('SIGINT', function(){
+//     mongoose.connection.close(function(){
+//       console.log("Mongoose default connection is disconnected due to application termination");
+//        process.exit(0);
+//       });
+// });
