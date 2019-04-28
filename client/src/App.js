@@ -72,15 +72,18 @@ class App extends React.Component {
               <li className={this.state.isAgentLoggedIn
                   ? 'nav-item'
                   : 'hidden'}>
-                <Link to={'/airline_list'} className="nav-link">List Passengers</Link>
+                <Link to={'/dashboard'} className="nav-link">Dashboard</Link>
               </li>
               <li className={this.state.isLoggedIn
                   ? this.state.userType == "admin"
                     ? 'nav-item'
                     : 'hidden'
                   : 'hidden'}>
-                <Link to={'/admin'} className="nav-link">Admin
-                </Link>
+              </li>
+              <li className={this.state.isAgentLoggedIn
+                  ? 'nav-item'
+                  : 'hidden'}>
+                <Link to={'/airline_list'} className="nav-link">Customer List</Link>
               </li>
               <li className={this.state.isLoggedIn
                   ? 'nav-item'
@@ -103,9 +106,9 @@ class App extends React.Component {
           <Route path='/admin_manage' component={AdminManagementComponent}/>
           <Route path='/airline_register' component={AirlineRegisterComponent}/>
           <Route path='/airline_login' component={AirlineLoginComponent}/>
-        <Route path='/airline_logout' component={AirlineLogoutComponent}/>
-      <Route path="/airline_list" component={TodosList} />
-        <Route path="/dashboard" exact component={Dashboard} />
+          <Route path='/airline_logout' component={AirlineLogoutComponent}/>
+          <Route path="/airline_list" component={TodosList} />
+          <Route path="/dashboard" exact component={Dashboard} />
         </Switch>
       </div>
     </Router>)

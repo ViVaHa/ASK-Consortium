@@ -15,7 +15,7 @@ export default class CustomerList extends Component {
         this.state= {
             customers:[],
             limit :5,
-            airline_name:"AA",
+            airline_name:localStorage.getItem('airline'),
             flights:[],
             chosen:"",
             selectedFlight:"Select Flight",
@@ -34,18 +34,18 @@ export default class CustomerList extends Component {
          this.getCustomers = this.getCustomers.bind(this);
          this.getAlternateFlight = this.getAlternateFlight.bind(this);
          this.sendRequest = this.sendRequest.bind(this);
-        
+
 
     }
 
     componentDidMount(){
         //var listLink = "http://localhost:5000/api/products/list/" + localStorage.getItem('login');
-        
+
         var listLink = "ticket/flights/" ;
         axios.get(listLink, {params : {"airline_name" : this.state.airline_name}})
-        .then(response =>{            
-            this.setState({flights:response.data});   
-                   
+        .then(response =>{
+            this.setState({flights:response.data});
+
 
         })
         .catch(function(error){
@@ -57,16 +57,16 @@ export default class CustomerList extends Component {
         var listLink = "ticket/customers/" ;
         axios.get(listLink, {params : {"airline_name" : this.state.airline_name, flight_name: this.state.selectedFlight}})
         .then(response =>{
-            
-            this.setState({customers:response.data});    
-            this.setState({showCustomers:true});        
-            
+
+            this.setState({customers:response.data});
+            this.setState({showCustomers:true});
+
             axios.get("flight/info", {params : {"airline_name" : this.state.airline_name, flight_name: this.state.selectedFlight}})
             .then(response =>{
-                
-                this.setState({flightDetails:response.data});    
-                       
-                
+
+                this.setState({flightDetails:response.data});
+
+
             })
             .catch(function(error){
                 console.log(error);
@@ -75,26 +75,27 @@ export default class CustomerList extends Component {
         .catch(function(error){
             console.log(error);
         })
-        
+
     }
-    
+
 
 
 
     handleClose() {
         this.setState({ show: false , isRequested:false});
       }
-    
-    
-    
+
+
+
     getAlternateFlight() {
-        axios.get("flight/alternateFlight", 
-        {params : {"airline_name" : this.state.airline_name, 
+        console.log(this.state);
+        axios.get("flight/alternateFlight/",
+        {params : {"airline_name" : this.state.airline_name,
         from: this.state.flightDetails.from , to: this.state.flightDetails.to}})
         .then(response =>{
-            
+
             this.setState({alternateFlights:response.data})
-            
+
         })
         .catch(function(error){
             console.log(error);
@@ -106,22 +107,22 @@ export default class CustomerList extends Component {
       sendRequest(flight,e){
         console.log(flight);
         console.log(this.state.airline_name, this.state.selectedFlight, this.state.selectedCustomer,flight.name)
-        axios.post("changeFlights/add", 
+        axios.post("changeFlights/add/",
          {from_airline_name : this.state.airline_name, from_flight_name: this.state.selectedFlight ,
             customer_name: this.state.selectedCustomer, to_airline_name:flight.airline_name,
-            from:this.state.flightDetails.from, to:this.state.flightDetails.to, status:"request_sent"})
-        .then(response =>{            
-            console.log(this.state.selectedAirline)
+            from:this.state.flightDetails.from, to:this.state.flightDetails.to, status:"request_sent", to_flight_name:flight.name})
+        .then(response =>{
+            console.log(response)
         })
         .catch(function(error){
             console.log(error);
-           
+
         })
         this.setState({ isRequested: true });
-        
+
       }
-    
-    
+
+
 
 
 
@@ -187,7 +188,7 @@ export default class CustomerList extends Component {
 
             </div>
 
-            
+
 
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
@@ -209,7 +210,7 @@ export default class CustomerList extends Component {
                 <div className={this.state.isRequested==true? '': 'hidden'}> Requested Airline</div>
           </Modal.Body>
           <Modal.Footer>
-        
+
             <Button variant="danger" onClick={this.handleClose}>
               close
             </Button>

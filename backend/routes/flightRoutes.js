@@ -73,7 +73,7 @@ router.post('/add', (req,res) =>{
 
   router.get('/checkAvailability', (req, res)=>{
     console.log(req.query);
-    flightDetails.findOne({$and : [{ airline_name : req.query.airline_name},{from : req.query.from}, {to: req.query.to},{available_seats : {$gt : 0}} ]},function(err,details){
+    flightDetails.findOne({$and : [{ name : req.query.flight_name},{from : req.query.from}, {to: req.query.to},{available_seats : {$gt : 0}} ]},function(err,details){
         if(err){
             console.log(err);
         } else {

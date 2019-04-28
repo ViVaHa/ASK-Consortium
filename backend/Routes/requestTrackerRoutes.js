@@ -4,7 +4,7 @@ const key = require('../../keys');
 const requestTracker = require('../models/requestTracker')
 
 router.post('/add', (req,res) =>{
-    console.log(req.body);
+    //console.log(req.body);
     requestTracker.findOne({$and : [{customer_name:req.body.customer_name}, {from_airline_name : req.body.from_airline_name}, {from_flight_name:req.body.from_flight_name}, {status: {$ne: "complete"}}]})
       .then(details =>{
         if(details){
@@ -17,11 +17,14 @@ router.post('/add', (req,res) =>{
             to_airline_name : req.body.to_airline_name,
             from:req.body.from,
             to:req.body.to,
-            status : req.body.status
+            status : req.body.status,
+            to_flight_name : req.body.to_flight_name
           });
-          console.log(newrequestTracker);
+          //console.log(newrequestTracker);
           newrequestTracker.save()
-          .then(details => res.status(200))
+          .then((details) => {
+            //console.log(details);
+            res.status(200)})
           .catch(err => console.log(err));
         }
       });
@@ -41,13 +44,13 @@ router.post('/add', (req,res) =>{
   });
 
 
-  
+
 
 
   router.put('/update', (req,res) =>{
-    console.log(req.query);
-    requestTracker.updateOne({$and:[{ customer_name : req.query.customer_name}, {to_airline_name: req.query.to_airline_name}, {from_airline_name: req.query.from_airline_name}
-        ,{ from_flight_name: req.query.from_flight_name }, {status :{$ne:"completed"}} ]} ,{ $set: {status: req.query.status } },   function(err, success){
+    console.log(req.body);
+    requestTracker.updateOne({$and:[{ customer_name : req.body.customer_name}, {to_airline_name: req.body.to_airline_name}, {from_airline_name: req.body.from_airline_name}
+        ,{ from_flight_name: req.body.from_flight_name }, { to_flight_name: req.body.to_flight_name },{status :{$ne:"completed"}} ]} ,{ $set: {status: req.body.status } },   function(err, success){
         if(err){
           console.log(err);
         }else{

@@ -9,9 +9,12 @@ let requestTrackerSchema = new Schema({
         type:String
     },
     customer_name:{
-        type:String 
+        type:String
     },
     from_flight_name :{
+        type:String
+    },
+    to_flight_name :{
         type:String
     },
     from:{
@@ -23,7 +26,7 @@ let requestTrackerSchema = new Schema({
     status:{
         type:String
     }
-    
+
 });
 
 
