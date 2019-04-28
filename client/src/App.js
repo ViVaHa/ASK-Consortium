@@ -10,22 +10,31 @@ import AdminLogout from './Components/AdminLogout'
 import AdminManagementComponent from './Components/AdminManagementComponent'
 import AirlineRegisterComponent from './Components/AirlineRegisterComponent'
 import AirlineLoginComponent from './Components/AirlineLoginComponent'
+import AirlineLogoutComponent from './Components/AirlineLogoutComponent'
 class App extends React.Component {
   constructor(){
     super();
     this.state = {
-      isLoggedIn:false
+      isLoggedIn:false,
+      isAgentLoggedIn:false
     }
   }
   componentDidMount(){
 
     console.log(localStorage.getItem('admin'));
     let adminLoggedIn = localStorage.getItem('admin');
+    let agentLoggedIn = localStorage.getItem('agent');
     if(adminLoggedIn){
       this.setState({isLoggedIn:true});
       console.log(localStorage.getItem('admin'));
     }else{
       this.setState({isLoggedIn:false});
+    }
+    if(agentLoggedIn){
+      this.setState({isAgentLoggedIn:true});
+      console.log(localStorage.getItem('agent'));
+    }else{
+      this.setState({isAgentLoggedIn:false});
     }
     //this.setState({isLoggedIn:true});
     //console.log(this.state);
@@ -40,18 +49,28 @@ class App extends React.Component {
               <li className="nav-item">
                 <Link to={'/'} className="nav-link">Home</Link>
               </li>
-              <li className={this.state.isLoggedIn
+              <li className={this.state.isAgentLoggedIn || this.state.isLoggedIn
                   ? 'hidden'
                   : 'nav-item'}>
-                <Link to={'/airline_register'} className="nav-link">Register</Link>
+                <Link to={'/airline_register'} className="nav-link">Airline Register</Link>
               </li>
-              <li className={this.state.isLoggedIn? 'hidden': 'nav-item'}>
+              <li className={this.state.isAgentLoggedIn || this.state.isLoggedIn
+                  ? 'hidden'
+                  : 'nav-item'}>
+                <Link to={'/airline_login'} className="nav-link">Airline Login</Link>
+              </li>
+              <li className={!this.state.isLoggedIn && !this.state.isAgentLoggedIn ? 'nav-item': 'hidden'}>
                 <Link to={'/admin_login'} className="nav-link">Admin Login</Link>
               </li>
               <li className={this.state.isLoggedIn
                   ? 'nav-item'
                   : 'hidden'}>
                 <Link to={'/admin_manage'} className="nav-link">Approve/Reject Airlines </Link>
+              </li>
+              <li className={this.state.isAgentLoggedIn
+                  ? 'nav-item'
+                  : 'hidden'}>
+                <Link to={'/airline_list'} className="nav-link">List Passengers</Link>
               </li>
               <li className={this.state.isLoggedIn
                   ? this.state.userType == "admin"
@@ -66,6 +85,14 @@ class App extends React.Component {
                   : 'hidden'}>
                 <Link to={'/admin_logout'} className="nav-link">Admin Logout</Link>
               </li>
+              <li className={this.state.isAgentLoggedIn
+                  ? 'nav-item'
+                  : 'hidden'}>
+                <Link to={'/airline_logout'} className="nav-link">Airline Logout</Link>
+              </li>
+
+
+
             </ul>
           </div>
         </nav>
@@ -75,8 +102,9 @@ class App extends React.Component {
           <Route path='/admin_logout' component={AdminLogout}/>
           <Route path='/admin_manage' component={AdminManagementComponent}/>
           <Route path='/airline_register' component={AirlineRegisterComponent}/>
-        <Route path='/airline_login' component={AirlineLoginComponent}/>
-        <Route path="/" exact component={TodosList} />
+          <Route path='/airline_login' component={AirlineLoginComponent}/>
+        <Route path='/airline_logout' component={AirlineLogoutComponent}/>
+      <Route path="/airline_list" component={TodosList} />
         </Switch>
       </div>
     </Router>)

@@ -26,8 +26,8 @@ export default class AirlineRegisterComponent extends Component{
     .then((res)=>{
       if(res.status==200){
         console.log(res);
-        //this.props.history.push('/');
-        //window.location.reload();
+        this.props.history.push('/');
+        window.location.reload();
       }else{
         console.log("Server Error");
       }
@@ -62,7 +62,7 @@ export default class AirlineRegisterComponent extends Component{
               </div>
               <p> Already have account? <Link to ='/airline_login' >Click Here</Link></p>
           </form>
-          
+
       </div>
     )
   }

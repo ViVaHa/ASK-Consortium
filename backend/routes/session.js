@@ -36,14 +36,15 @@ router.post('/register', function(req, res) {
 
 
 
-router.get('/login', (req,res)=>{
+router.post('/login', (req,res)=>{
   let {errors, isValid} = validation(req.body);
   let obj = {}
   obj.name = req.body.agent;
   obj.airline = req.body.airline;
   obj.password = req.body.password;
+  console.log(errors);
   if (Object.entries(errors).length === 0 && errors.constructor === Object) {
-    Agent.findOne({airline:req.body.airline})
+    Agent.findOne({$and : [{name:req.body.agent},{airline:req.body.airline},{status : {$eq:"approved"}}]})
     .then((agent)=>{
       if(!agent){
         res.status(400).send("No such user");

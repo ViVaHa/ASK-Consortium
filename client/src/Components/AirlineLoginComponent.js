@@ -33,11 +33,13 @@ onSubmit = (e)=>{
   obj.password = this.state.password;
   axios.post('/session/login', obj)
   .then((res)=>{
-    console.log(res);
+    localStorage.setItem('airline', this.state.airline);
+    localStorage.setItem('agent', true);
+    this.props.history.push('/airline_list');
+    window.location.reload();
   })
   .catch((err)=>{
     console.log(err);
-
     this.setState({showModal: true, errorStatus:"Invalid Credentials"})
   })
 

@@ -6,7 +6,7 @@ import PromptModal from './PromptModalComponent';
 
 
 
-export default class AdminLogout extends Component {
+export default class AirlineLoginComponent extends Component {
   constructor(){
       super();
       this.state = {
@@ -18,14 +18,15 @@ export default class AdminLogout extends Component {
   }
   onSubmit = e =>{
     e.preventDefault();
-    var admin = localStorage.getItem('admin');
+    var agent = localStorage.getItem('agent');
     console.log("Success");
 
     this.setState({showModal : true});
   }
   logout = e => {
-    localStorage.removeItem('admin');
-    this.props.history.push('/admin_login');
+    localStorage.removeItem('agent');
+    localStorage.removeItem('airline');
+    this.props.history.push('/airline_login');
     window.location.reload();
     window.location.reload();
     this.setState({showModal : false});
