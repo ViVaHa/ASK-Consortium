@@ -17,9 +17,9 @@ let ticketDetailsSchema = new Schema({
 
 
 let ticketDetails={}
-ticketDetails.ticketDetailsA =  databases.connectionA.model('ticketDetails', ticketDetailsSchema);
-ticketDetails.ticketDetailsB =  databases.connectionB.model('ticketDetails', ticketDetailsSchema);
-ticketDetails.ticketDetailsC =  databases.connectionC.model('ticketDetails', ticketDetailsSchema);
+ticketDetails.ticketDetailsA =  databases.dbA.model('ticketDetails', ticketDetailsSchema);
+ticketDetails.ticketDetailsB =  databases.dbB.model('ticketDetails', ticketDetailsSchema);
+ticketDetails.ticketDetailsC =  databases.dbC.model('ticketDetails', ticketDetailsSchema);
 
 
 module.exports = ticketDetails ;
