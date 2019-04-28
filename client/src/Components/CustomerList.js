@@ -8,8 +8,8 @@ import '../App.css';
 
 
 export default class CustomerList extends Component {
-    
-    
+
+
     constructor(props){
         super(props);
         this.state= {
@@ -35,6 +35,7 @@ export default class CustomerList extends Component {
          this.getAlternateFlight = this.getAlternateFlight.bind(this);
          this.sendRequest = this.sendRequest.bind(this);
         
+
     }
 
     componentDidMount(){
@@ -45,6 +46,7 @@ export default class CustomerList extends Component {
         .then(response =>{            
             this.setState({flights:response.data});   
                    
+
         })
         .catch(function(error){
             console.log(error);
@@ -73,10 +75,10 @@ export default class CustomerList extends Component {
         .catch(function(error){
             console.log(error);
         })
-
         
     }
     
+
 
 
     handleClose() {
@@ -121,15 +123,16 @@ export default class CustomerList extends Component {
     
     
 
-    
 
-    
+
+
+
+
 
     render() {
         let flights  = this.state.flights;
-        
-        let optionItems = flights.map((flight) =>        
-                          <Dropdown.Item key={flight}><a onClick = {e => this.setState({ selectedFlight:flight})} >{flight}</a></Dropdown.Item>                        
+        let optionItems = flights.map((flight) =>
+                          <Dropdown.Item key={flight}><a onClick = {e => this.setState({ selectedFlight:flight})} >{flight}</a></Dropdown.Item>
                           );
         let customers = this.state.customers;
         let row = customers.map((customer)=>
@@ -150,12 +153,12 @@ export default class CustomerList extends Component {
             </tr>
         );
         return (
-           
+
             <div >
-            <div className=" jumbotron text-center">
+            <div className="jumbotron text-center">
                 <h1 >{this.state.airline_name}</h1>
                 <p> Get Customer for a flight</p>
-                
+
 
                 <div className="col-sm-6 offset-sm-5 text-center">
                 <table>
@@ -166,10 +169,10 @@ export default class CustomerList extends Component {
                 </table>
                 </div>
             </div>
-            
+
             <div className={this.state.showCustomers==false?'hidden':'col-sm-6 offset-sm-3 text-center' }>
-                
-                
+
+
                 <table className= "table table-light table-striped table-hover " style={{marginTop:20}}>
                 <thead className="thead-dark">
                     <tr>
@@ -181,7 +184,7 @@ export default class CustomerList extends Component {
                         {row}
                 </tbody>
                 </table>
-               
+
             </div>
 
             
