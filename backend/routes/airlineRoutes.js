@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const key = require('../../keys');
-const airlineDetails = require('../models/airlineDetails')
+const airlineDetails = require('../models/airlineDetails').airlineDetailsConsortium;
 
 router.post('/register/', (req,res) =>{
     console.log(req.query.name);

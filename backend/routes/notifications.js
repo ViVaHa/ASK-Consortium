@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const requestTracker = require('../models/requestTracker')
+const requestTracker = require('../models/requestTracker').requestTrackerConsortium
 
 router.get('/airlines/dashboard', (req, res)=>{
   let airline = req.query.airline;

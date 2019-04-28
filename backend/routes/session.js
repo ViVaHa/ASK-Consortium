@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const validation = require('../functions/Registration');
-const Agents = require('../models/agents');
+const Agents = require('../models/agents').agentConsortium;
 
 router.post('/register', function(req, res) {
   let {errors, isValid} = validation(req.body);
