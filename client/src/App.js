@@ -1,6 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import "bootstrap/dist/css/bootstrap.min.css";
+import CustomerList from './Components/CustomerList';
+import Dashboard from './Components/DashboardComponent'
 import TodosList from './Components/CustomerList';
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import './App.css';
@@ -91,8 +93,6 @@ class App extends React.Component {
                 <Link to={'/airline_logout'} className="nav-link">Airline Logout</Link>
               </li>
 
-
-
             </ul>
           </div>
         </nav>
@@ -105,6 +105,7 @@ class App extends React.Component {
           <Route path='/airline_login' component={AirlineLoginComponent}/>
         <Route path='/airline_logout' component={AirlineLogoutComponent}/>
       <Route path="/airline_list" component={TodosList} />
+        <Route path="/dashboard" exact component={Dashboard} />
         </Switch>
       </div>
     </Router>)

@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {DropdownButton, Dropdown, Button, ButtonToolbar} from 'react-bootstrap';
+import {DropdownButton, Dropdown, Button, Modal} from 'react-bootstrap';
+
 
 import '../App.css';
-const Customer = props=>(
-    <tr>
-        <td>{props.customer.customer_name}</td>
-        <td><Button>Change flight</Button></td>
-    </tr>
-)
+
 
 
 export default class CustomerList extends Component {
@@ -19,25 +15,38 @@ export default class CustomerList extends Component {
         this.state= {
             customers:[],
             limit :5,
-            airline_name:"",
+            airline_name:"AA",
             flights:[],
             chosen:"",
             selectedFlight:"Select Flight",
-            showCustomers:false
+            showCustomers:false,
+            show:false,
+            from:"",
+            to:"",
+            flightDetails:[],
+            alternateFlights:[],
+            selectedCustomer:"",
+            selectedAirline:"",
+            from_flight_name:"",
+            isRequested:false
         };
-        this.onLoadMore = this.onLoadMore.bind(this);
-        this.getCustomers = this.getCustomers.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+         this.getCustomers = this.getCustomers.bind(this);
+         this.getAlternateFlight = this.getAlternateFlight.bind(this);
+         this.sendRequest = this.sendRequest.bind(this);
+        
 
     }
 
     componentDidMount(){
         //var listLink = "http://localhost:5000/api/products/list/" + localStorage.getItem('login');
-        let airline  = localStorage.getItem('airline');
+        
         var listLink = "ticket/flights/" ;
-        axios.get(listLink, {params : {"airline_name" : airline}})
-        .then(response =>{
-            this.setState({flights:response.data});
-            //console.log(this.state.flights)
+        axios.get(listLink, {params : {"airline_name" : this.state.airline_name}})
+        .then(response =>{            
+            this.setState({flights:response.data});   
+                   
+
         })
         .catch(function(error){
             console.log(error);
@@ -45,26 +54,74 @@ export default class CustomerList extends Component {
     }
 
     getCustomers(){
-        let airline  = localStorage.getItem('airline');
-        var listLink = "/ticket/customers/" ;
-        axios.get(listLink, {params : {"airline_name" : airline, flight_name: this.state.selectedFlight}})
+        var listLink = "ticket/customers/" ;
+        axios.get(listLink, {params : {"airline_name" : this.state.airline_name, flight_name: this.state.selectedFlight}})
         .then(response =>{
-
-            this.setState({customers:response.data});
-            this.setState({showCustomers:true});
-            //console.log(this.state.customers)
+            
+            this.setState({customers:response.data});    
+            this.setState({showCustomers:true});        
+            
+            axios.get("flight/info", {params : {"airline_name" : this.state.airline_name, flight_name: this.state.selectedFlight}})
+            .then(response =>{
+                
+                this.setState({flightDetails:response.data});    
+                       
+                
+            })
+            .catch(function(error){
+                console.log(error);
+            })
         })
         .catch(function(error){
             console.log(error);
         })
+        
     }
-    onLoadMore() {
-        this.setState({
-            limit: this.state.limit + 5
-        });
+    
 
-    }
 
+
+    handleClose() {
+        this.setState({ show: false , isRequested:false});
+      }
+    
+    
+    
+    getAlternateFlight() {
+        axios.get("flight/alternateFlight", 
+        {params : {"airline_name" : this.state.airline_name, 
+        from: this.state.flightDetails.from , to: this.state.flightDetails.to}})
+        .then(response =>{
+            
+            this.setState({alternateFlights:response.data})
+            
+        })
+        .catch(function(error){
+            console.log(error);
+        })
+        this.setState({ show: true });
+      }
+
+
+      sendRequest(flight,e){
+        console.log(flight);
+        console.log(this.state.airline_name, this.state.selectedFlight, this.state.selectedCustomer,flight.name)
+        axios.post("changeFlights/add", 
+         {from_airline_name : this.state.airline_name, from_flight_name: this.state.selectedFlight ,
+            customer_name: this.state.selectedCustomer, to_airline_name:flight.airline_name,
+            from:this.state.flightDetails.from, to:this.state.flightDetails.to, status:"request_sent"})
+        .then(response =>{            
+            console.log(this.state.selectedAirline)
+        })
+        .catch(function(error){
+            console.log(error);
+           
+        })
+        this.setState({ isRequested: true });
+        
+      }
+    
+    
 
 
 
@@ -81,8 +138,19 @@ export default class CustomerList extends Component {
         let row = customers.map((customer)=>
         <tr>
                 <td>{customer.customer_name}</td>
-                <td><Button>Change flight</Button></td>
+                <td><Button variant="danger" onClick={e => {this.setState({ selectedCustomer:customer.customer_name})
+            this.getAlternateFlight()}} >Change flight</Button></td>
         </tr>
+        );
+        let alternateFlights = this.state.alternateFlights;
+        let flightRow = alternateFlights.map((flight)=>
+            <tr >
+                <td>{flight.name}</td>
+                <td>{flight.airline_name}</td>
+                <td>
+                <Button variant="dark" onClick={this.sendRequest.bind(this, flight)} >Change flight</Button>
+                </td>
+            </tr>
         );
         return (
 
@@ -100,10 +168,6 @@ export default class CustomerList extends Component {
                         <td><Button variant="dark" onClick={this.getCustomers}>Get Customers</Button></td></tr>
                 </table>
                 </div>
-
-
-
-
             </div>
 
             <div className={this.state.showCustomers==false?'hidden':'col-sm-6 offset-sm-3 text-center' }>
@@ -122,6 +186,35 @@ export default class CustomerList extends Component {
                 </table>
 
             </div>
+
+            
+
+        <Modal show={this.state.show} onHide={this.handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Select Flight</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+                <table className= "table table-light table-striped table-hover " style={{marginTop:20}}>
+                <thead className="thead-dark">
+                    <tr>
+                    <th scope="col">flight name</th>
+                    <th scope="col">Airline </th>
+                    <th scope="col">choose </th>
+                    </tr>
+                </thead>
+                <tbody>
+                        {flightRow}
+                </tbody>
+                </table>
+                <div className={this.state.isRequested==true? '': 'hidden'}> Requested Airline</div>
+          </Modal.Body>
+          <Modal.Footer>
+        
+            <Button variant="danger" onClick={this.handleClose}>
+              close
+            </Button>
+          </Modal.Footer>
+        </Modal>
             </div>
         )
     }

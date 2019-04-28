@@ -3,20 +3,20 @@ const router = express.Router();
 const key = require('../../keys');
 const flightDetails = require('../models/flightDetails')
 
-router.post('/add/', (req,res) =>{
-    console.log(req.body.name);
-    flightDetails.findOne({name:req.body.name})
+router.post('/add', (req,res) =>{
+    console.log(req.query.name);
+    flightDetails.findOne({$and : [{name:req.query.name}, {airline_name:req.query.airline_name}]})
       .then(details =>{
         if(details){
           res.status(400).json({email:' Already added'});
         }else{
           const newflightDetails = new flightDetails({
-            name: req.body.name,
-            airline_name : req.body.airline_name,
-            available_seats: req.body.seats,
-            from :req.body.from,
-            to :req.body.to,
-            price: req.body.price
+            name: req.query.name,
+            airline_name : req.query.airline_name,
+            available_seats: req.query.seats,
+            from :req.query.from,
+            to :req.query.to,
+            price: req.query.price
           });
           console.log(newflightDetails);
           newflightDetails.save()
@@ -29,6 +29,17 @@ router.post('/add/', (req,res) =>{
   });
 
 
+  router.get('/info', (req, res)=>{
+    console.log("Request for flight/info", req.query)
+    flightDetails.findOne({$and:[{airline_name:req.query.airline_name}, {name :req.query.flight_name}]},function(err,details){
+        if(err){
+            console.log(err);
+        } else {
+            res.json(details);
+        }
+    });
+  });
+
   router.get('/listAll', (req, res)=>{
     flightDetails.find({},function(err,details){
         if(err){
@@ -40,7 +51,7 @@ router.post('/add/', (req,res) =>{
   });
 
   router.put('/update', (req,res) =>{
-    flightDetails.findOneAndUpdate({ name : req.body.name} ,{ available_seats : req.body.available_seats},   function(err, success){
+    flightDetails.findOneAndUpdate({ name : req.query.name} ,{ available_seats : req.query.available_seats},   function(err, success){
         if(err){
           console.log(err);
         }else{
@@ -49,11 +60,20 @@ router.post('/add/', (req,res) =>{
     });
   })
 
-
+  router.get('/alternateFlight', (req, res)=>{
+    console.log("req for flight/alternateFlight", req.query);
+    flightDetails.find({$and:[{from : req.query.from}, {to:req.query.to}, {airline_name:{$ne:req.query.airline_name}}]},function(err,details){
+        if(err){
+            console.log(err);
+        } else {
+            res.json(details);
+        }
+    });
+  });
 
   router.get('/checkAvailability', (req, res)=>{
-    console.log(req.body);
-    flightDetails.findOne({$and : [{ airline_name : req.body.airline_name},{from : req.body.from}, {to: req.body.to},{available_seats : {$gt : 0}} ]},function(err,details){
+    console.log(req.query);
+    flightDetails.findOne({$and : [{ airline_name : req.query.airline_name},{from : req.query.from}, {to: req.query.to},{available_seats : {$gt : 0}} ]},function(err,details){
         if(err){
             console.log(err);
         } else {
