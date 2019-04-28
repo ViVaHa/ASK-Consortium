@@ -26,8 +26,8 @@ let flightDetailsSchema = new Schema({
 
 
 let flightDetails={}
-flightDetails.flightDetailsA =  databases.connectionA.model('flightDetails', flightDetailsSchema);
-flightDetails.flightDetailsB =  databases.connectionB.model('flightDetails', flightDetailsSchema);
-flightDetails.flightDetailsC =  databases.connectionC.model('flightDetails', flightDetailsSchema);
+flightDetails.flightDetailsA =  databases.dbA.model('flightDetails', flightDetailsSchema);
+flightDetails.flightDetailsB =  databases.dbB.model('flightDetails', flightDetailsSchema);
+flightDetails.flightDetailsC =  databases.dbC.model('flightDetails', flightDetailsSchema);
 
 module.exports = flightDetails ;
