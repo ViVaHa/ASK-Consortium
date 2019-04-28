@@ -11,12 +11,11 @@ router.post('/add/', (req,res) =>{
           res.status(400).json({error:' Already added'}, {errorCode : 2});
         }else{
           const newrequestTracker = new requestTracker({
-            customer_name: req.body.customer_name, 
-            from_airline_name : req.body.from_airline_name,          
+            customer_name: req.body.customer_name,
+            from_airline_name : req.body.from_airline_name,
             from_flight_name: req.body.from_flight_name,
-            to_airline_name : req.body.to_airline_name,          
+            to_airline_name : req.body.to_airline_name,
             status : "To be Processed"
-            
           });
           console.log(newrequestTracker);
           newrequestTracker.save()
@@ -24,8 +23,8 @@ router.post('/add/', (req,res) =>{
           .catch(err => console.log(err));
         }
       });
-    
-  
+
+
   });
 
 
@@ -40,31 +39,31 @@ router.post('/add/', (req,res) =>{
   });
 
   router.put('/update', (req,res) =>{
-    console.log(req.body);    
+    console.log(req.body);
     requestTracker.updateOne({$and:[{ customer_name : req.body.customer_name}, {to_airline_name: req.body.to_airline_name}, {from_airline_name: req.body.from_airline_name}
         ,{ from_flight_name: req.body.from_flight_name }, {status :{$ne:"completed"}} ]} ,{ $set: {status: req.body.status } },   function(err, success){
         if(err){
           console.log(err);
         }else{
-            if(success.n>0)  
+            if(success.n>0)
                 res.status(200).json({"success" : true });
-            else 
+            else
                 res.status(200).json({"Error": "No such request", errorCode:4})
         }
     });
   })
 
 
-  
-  
 
-  
+
+
+
 
 
   router.get('/test', (req,res) =>{
-    console.log("hi"); 
+    console.log("hi");
     res.json({"Hi":1});
-  
+
   });
 
 
