@@ -33,9 +33,7 @@ let requestTrackerSchema = new Schema({
 
 
 let requestTracker={}
-requestTracker.requestTrackerA =  databases.connectionA.model('requestTracker', requestTrackerSchema);
-requestTracker.requestTrackerB =  databases.connectionB.model('requestTracker', requestTrackerSchema);
-requestTracker.requestTrackerC =  databases.connectionC.model('requestTracker', requestTrackerSchema);
+requestTracker.requestTrackerConsortium =  databases.dbConsortium.model('requestTracker', requestTrackerSchema);
 
 module.exports = requestTracker ;
 

@@ -10,8 +10,7 @@ let airlineDetailsSchema = new Schema({
 });
 
 let airlineDetails={}
-airlineDetails.airlineDetailsA =  databases.connectionA.model('airlineDetails', airlineDetailsSchema);
-airlineDetails.airlineDetailsB =  databases.connectionB.model('airlineDetails', airlineDetailsSchema);
-airlineDetails.airlineDetailsC =  databases.connectionC.model('airlineDetails', airlineDetailsSchema);
+airlineDetails.airlineDetailsConsortium =  databases.dbConsortium.model('airlineDetails', airlineDetailsSchema);
+
 
 module.exports = airlineDetails ;
