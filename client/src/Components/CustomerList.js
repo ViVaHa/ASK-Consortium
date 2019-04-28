@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {DropdownButton, Dropdown, Button, Modal} from 'react-bootstrap';
-import PromptModal from './PromptModalComponent'
+
 
 import '../App.css';
-const Customer = props=>(
-    <tr>
-        <td>{props.customer.customer_name}</td>
-        <td><Button>Change flight</Button></td>
-    </tr>
-)
+
 
 
 export default class CustomerList extends Component {
@@ -111,7 +106,8 @@ export default class CustomerList extends Component {
         console.log(this.state.airline_name, this.state.selectedFlight, this.state.selectedCustomer,flight.name)
         axios.post("changeFlights/add", 
          {from_airline_name : this.state.airline_name, from_flight_name: this.state.selectedFlight ,
-            customer_name: this.state.selectedCustomer, to_airline_name:flight.airline_name})
+            customer_name: this.state.selectedCustomer, to_airline_name:flight.airline_name,
+            from:this.state.flightDetails.from, to:this.state.flightDetails.to, status:"request_sent"})
         .then(response =>{            
             console.log(this.state.selectedAirline)
         })
@@ -139,7 +135,7 @@ export default class CustomerList extends Component {
         let row = customers.map((customer)=>
         <tr>
                 <td>{customer.customer_name}</td>
-                <td><Button onClick={e => {this.setState({ selectedCustomer:customer.customer_name})
+                <td><Button variant="danger" onClick={e => {this.setState({ selectedCustomer:customer.customer_name})
             this.getAlternateFlight()}} >Change flight</Button></td>
         </tr>
         );
@@ -149,7 +145,7 @@ export default class CustomerList extends Component {
                 <td>{flight.name}</td>
                 <td>{flight.airline_name}</td>
                 <td>
-                <Button onClick={this.sendRequest.bind(this, flight)} >Change flight</Button>
+                <Button variant="dark" onClick={this.sendRequest.bind(this, flight)} >Change flight</Button>
                 </td>
             </tr>
         );
@@ -169,10 +165,6 @@ export default class CustomerList extends Component {
                         <td><Button variant="dark" onClick={this.getCustomers}>Get Customers</Button></td></tr>
                 </table>
                 </div>
-                             
-               
-                
-                
             </div>
             
             <div className={this.state.showCustomers==false?'hidden':'col-sm-6 offset-sm-3 text-center' }>
