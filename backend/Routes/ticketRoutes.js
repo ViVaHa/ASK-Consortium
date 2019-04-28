@@ -26,6 +26,28 @@ router.post('/add/', (req,res) =>{
   
   });
 
+  router.get('/customers', (req, res)=>{
+    console.log("Request for tickets/customers", req.query);
+    ticketDetails.find({airline_name : req.query.airline_name, flight_name:req.query.flight_name},function(err,details){
+        if(err){
+            console.log(err);
+        } else {
+            res.json(details);
+        }
+    });
+  });
+
+  router.get('/flights', (req, res)=>{
+    console.log("Request for tickets/flights", req.query);
+    ticketDetails.distinct('flight_name',{airline_name : req.query.airline_name},function(err,details){
+        if(err){
+            console.log(err);
+        } else {
+            res.json(details);
+        }
+    });
+  });
+
 
   router.get('/listAll', (req, res)=>{
     ticketDetails.find({},function(err,details){

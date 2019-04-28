@@ -1,5 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
+import "bootstrap/dist/css/bootstrap.min.css";
+import TodosList from './Components/CustomerList';
 import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -74,6 +76,7 @@ class App extends React.Component {
           <Route path='/admin_manage' component={AdminManagementComponent}/>
           <Route path='/airline_register' component={AirlineRegisterComponent}/>
         <Route path='/airline_login' component={AirlineLoginComponent}/>
+        <Route path="/" exact component={TodosList} />
         </Switch>
       </div>
     </Router>)
