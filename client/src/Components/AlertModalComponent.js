@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
-export default class PromptModal extends Component {
+export default class AlertModal extends Component {
   render() {
     return (
       <Modal

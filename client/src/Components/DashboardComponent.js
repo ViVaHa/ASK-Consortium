@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {DropdownButton, Dropdown, Button, Modal} from 'react-bootstrap';
-
+import AlertModal from './AlertModalComponent'
 
 export default class Dashboard extends Component {
 
-
     constructor(props){
         super(props);
+        var current = this;
         this.state= {
            airline_name:localStorage.getItem('airline'),
            requests:[],
+           showModal : false
 
         }
         console.log(this.state);
         this.verify=this.verify.bind(this);
-        this.approve = this.approve.bind(this);
         this.updateTicket = this.updateTicket.bind(this);
         this.updateRequest = this.updateRequest.bind(this);
     }
@@ -38,7 +38,6 @@ export default class Dashboard extends Component {
                 }
             })
             .then(()=>{
-
               this.setState({requests:tempRequests})
               console.log(this.state.requests);
             })
@@ -49,6 +48,7 @@ export default class Dashboard extends Component {
         }
 
         verify(r,event){
+            var current = this;
             this.setState({verified:false})
             axios.get("flight/checkAvailability",
             {params : {"flight_name" : r.to_flight_name,
@@ -63,11 +63,17 @@ export default class Dashboard extends Component {
                 }
             })
             .catch(function(error){
+                current.updateRequest(r, "rejected");
+                current.setState({modalText:"Not enough Seats Available", modalHeading:"Rejected"})
+                current.reject(r);
                 console.log(error);
             })
             this.setState({ show: true });
         }
+        reject = ()=>{
 
+            this.setState({showModal:true});
+        }
         updateTicket(r){
           let obj = {};
           obj.customer_name = r.customer_name;
@@ -103,25 +109,28 @@ export default class Dashboard extends Component {
             axios.put("flight/update", nestedObj)
             .then((updated_old)=>{
               console.log("INCREMENTED IN OLD AIRLINE");
-              this.updateRequest(r);
+              this.updateRequest(r, "completed");
             })
           })
         }
-        updateRequest(r){
+        updateRequest(r, status){
           let nestedObj={}
             nestedObj.customer_name = r.customer_name;
             nestedObj.from_flight_name = r.from_flight_name;
             nestedObj.to_flight_name = r.to_flight_name;
             nestedObj.from_airline_name = r.from_airline_name;
             nestedObj.to_airline_name = r.to_airline_name;
-            nestedObj.status="completed"
+            nestedObj.status=status
             axios.put("changeFlights/update", nestedObj)
             .then((response)=>{
               console.log("RESPONSE SENT");
               console.log(response);
               //this.props.history.push('/dashboard');
               //window.location.reload();
+              if(status=="completed"){
+                this.setState({modalText:"Seat Changed successfully", modalHeading: "Success",showModal:true});
 
+              }
             })
             .catch((err)=>{
               console.log(err);
@@ -130,11 +139,17 @@ export default class Dashboard extends Component {
 
 
 
-        approve(){
-
+        rejectRequest(request, event){
+            this.setState({modalText:"Rejecting request"})
+            this.updateRequest(request, "rejected");
+            this.setState({showModal:true, modalHeading:"Rejected"});
         }
 
-
+    alertClose = e =>{
+      this.setState({showAlertModal : false});
+      this.props.history.push('/dashboard');
+      window.location.reload();
+    }
 
     render() {
         let requests = this.state.requests;
@@ -146,7 +161,7 @@ export default class Dashboard extends Component {
                 <td>{request.to}</td>
               <td><Button variant="info"  onClick={this.verify.bind(this, request)} disabled={!request.showVerify}>Verify</Button></td>
 
-            <td ><Button variant="danger" onClick={this.approve.bind(this, request) }>Reject</Button></td>
+            <td ><Button variant="danger" onClick={this.rejectRequest.bind(this, request) }>Reject</Button></td>
         </tr>
         );
         return(
@@ -163,7 +178,7 @@ export default class Dashboard extends Component {
                   <th scope="col">Requested Flight</th>
                     <th scope="col">from</th>
                     <th scope="col">to</th>
-                  <th scope="col" >Verify and Approve</th>
+                  <th scope="col" >Verify and Respond</th>
                   <th scope="col">Reject</th>
                     </tr>
                 </thead>
@@ -171,6 +186,12 @@ export default class Dashboard extends Component {
                         {row}
                 </tbody>
                 </table>
+                <AlertModal
+                    show = {this.state.showModal}
+                    close = {this.alertClose}
+                    heading = {this.state.modalHeading}
+                    body = {this.state.modalText}
+                    text = "Close"/>
 
         </div>
         )

@@ -72,7 +72,7 @@ class App extends React.Component {
               <li className={this.state.isAgentLoggedIn
                   ? 'nav-item'
                   : 'hidden'}>
-                <Link to={'/dashboard'} className="nav-link">Dashboard</Link>
+                <Link to={'/dashboard'} className="nav-link">Manage Requests</Link>
               </li>
               <li className={this.state.isLoggedIn
                   ? this.state.userType == "admin"

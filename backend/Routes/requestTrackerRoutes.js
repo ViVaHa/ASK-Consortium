@@ -5,7 +5,7 @@ const requestTracker = require('../models/requestTracker').requestTrackerConsort
 
 router.post('/add', (req,res) =>{
     //console.log(req.body);
-    requestTracker.findOne({$and : [{customer_name:req.body.customer_name}, {from_airline_name : req.body.from_airline_name}, {from_flight_name:req.body.from_flight_name}, {status: {$ne: "completed"}}]})
+    requestTracker.findOne({$and : [{customer_name:req.body.customer_name}, {from_airline_name : req.body.from_airline_name}, {from_flight_name:req.body.from_flight_name}, {status: {$eq: "request_sent"}}]})
       .then(details =>{
         if(details){
           res.status(400);
@@ -51,7 +51,7 @@ router.post('/add', (req,res) =>{
   router.put('/update', (req,res) =>{
     console.log(req.body);
     requestTracker.updateOne({$and:[{ customer_name : req.body.customer_name}, {to_airline_name: req.body.to_airline_name}, {from_airline_name: req.body.from_airline_name}
-        ,{ from_flight_name: req.body.from_flight_name }, { to_flight_name: req.body.to_flight_name },{status :{$ne:"completed"}} ]} ,{ $set: {status: req.body.status } },   function(err, success){
+        ,{ from_flight_name: req.body.from_flight_name }, { to_flight_name: req.body.to_flight_name },{status :{$eq:"request_sent"}} ]} ,{ $set: {status: req.body.status } },   function(err, success){
         if(err){
           console.log(err);
         }else{

@@ -26,7 +26,9 @@ export default class AirlineRegisterComponent extends Component{
     .then((res)=>{
       if(res.status==200){
         console.log(res);
-        this.props.history.push('/');
+        alert('Registration complete');
+        this.props.history.push('//airline_login');
+
         window.location.reload();
       }else{
         console.log("Server Error");

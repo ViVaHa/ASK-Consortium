@@ -9,7 +9,7 @@ router.post('/register', function(req, res) {
   obj.name = req.body.agent;
   obj.airline = req.body.airline;
   obj.password = req.body.password;
-  obj.status = "pending";
+  obj.status = "approved";
 
 
 
@@ -24,7 +24,7 @@ router.post('/register', function(req, res) {
         res.status(400).send({error:"Already Exists"});
       } else {
         new Agent(obj).save().then((agent) => {
-          res.status(200).send("Chairperson should approve");
+          res.status(200).send("Entered the consortium");
         }).catch((err) => {
           console.log(err);
         })
