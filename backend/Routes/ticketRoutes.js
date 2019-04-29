@@ -80,9 +80,11 @@ router.post('/add/', (req,res) =>{
   });
 
   router.put('/update', (req,res) =>{
-    let old_airline = req.query.old_airline_name;
+    console.log("TICKET UPDATE");
+    console.log(req.body);
+    let old_airline = req.body.old_airline_name;
     var old_model = getModel(old_airline);
-    let new_airline = req.query.new_airline_name;
+    let new_airline = req.body.new_airline_name;
     var new_model = getModel(new_airline);
     // model.updateOne({$and:[{ customer_name : req.body.customer_name}, {airline_name: req.body.old_airline_name},{ flight_name: req.body.old_flight_name } ]} ,{ $set: {airline_name: req.body.new_airline_name, flight_name: req.body.new_flight_name } },   function(err, success){
     //     if(err){
@@ -102,14 +104,14 @@ router.post('/add/', (req,res) =>{
     //
 
     const newTicket = new new_model({
-      customer_name : req.query.customer_name,
+      customer_name : req.body.customer_name,
       airline_name : new_airline,
-      flight_name : req.query.new_flight_name
+      flight_name : req.body.new_flight_name
     })
     newTicket.save()
     .then((ticket)=>{
       console.log(ticket);
-      old_model.deleteOne({$and :[{customer_name: req.query.customer_name}, {flight_name: req.query.old_flight_name}, {airline_name:req.query.old_airline_name}]})
+      old_model.deleteOne({$and :[{customer_name: req.body.customer_name}, {flight_name: req.body.old_flight_name}, {airline_name:req.body.old_airline_name}]})
       .then(()=>{
         res.status(200).json({"success" : true });
       })

@@ -52,7 +52,7 @@ export default class Dashboard extends Component {
             this.setState({verified:false})
             axios.get("flight/checkAvailability",
             {params : {"flight_name" : r.to_flight_name,
-            from: r.from , to: r.to}})
+            from: r.from , to: r.to, airline_name:localStorage.getItem('airline')}})
             .then(response =>{
                 if(response.status===200){
                   console.log("SEAT AVALIBILITY CHECKED");
@@ -79,7 +79,8 @@ export default class Dashboard extends Component {
           .then((response)=>{
             if(response.status===200){
                 console.log("TICKET UPDATED");
-                this.updateRequest(r);
+                //this.updateRequest(r);
+                this.updateFlights(r);
             }
           })
           .catch((err)=>{
@@ -87,6 +88,25 @@ export default class Dashboard extends Component {
           })
         }
 
+        updateFlights(r){
+          let obj={}
+          obj.increment = -1;
+          obj.flight_name = r.to_flight_name;
+          obj.airline_name = r.to_airline_name;
+          axios.put("flight/update", obj)
+          .then((updated_new)=>{
+            console.log("DECREMENTED IN NEW AIRLINE");
+            let nestedObj={}
+            nestedObj.increment = 1;
+            nestedObj.flight_name = r.from_flight_name;
+            nestedObj.airline_name = r.from_airline_name;
+            axios.put("flight/update", nestedObj)
+            .then((updated_old)=>{
+              console.log("INCREMENTED IN OLD AIRLINE");
+              this.updateRequest(r);
+            })
+          })
+        }
         updateRequest(r){
           let nestedObj={}
             nestedObj.customer_name = r.customer_name;
@@ -99,6 +119,9 @@ export default class Dashboard extends Component {
             .then((response)=>{
               console.log("RESPONSE SENT");
               console.log(response);
+              //this.props.history.push('/dashboard');
+              //window.location.reload();
+
             })
             .catch((err)=>{
               console.log(err);

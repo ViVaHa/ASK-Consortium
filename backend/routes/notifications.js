@@ -3,6 +3,7 @@ const router = express.Router();
 const requestTracker = require('../models/requestTracker').requestTrackerConsortium
 
 router.get('/airlines/dashboard', (req, res)=>{
+  console.log(req.query);
   let airline = req.query.airline;
   requestTracker.find({$and : [{to_airline_name : airline}, {status:{$eq:"request_sent"}}]})
   .then((pending)=>{

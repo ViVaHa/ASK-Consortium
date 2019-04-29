@@ -5,10 +5,11 @@ const requestTracker = require('../models/requestTracker').requestTrackerConsort
 
 router.post('/add', (req,res) =>{
     //console.log(req.body);
-    requestTracker.findOne({$and : [{customer_name:req.body.customer_name}, {from_airline_name : req.body.from_airline_name}, {from_flight_name:req.body.from_flight_name}, {status: {$ne: "complete"}}]})
+    requestTracker.findOne({$and : [{customer_name:req.body.customer_name}, {from_airline_name : req.body.from_airline_name}, {from_flight_name:req.body.from_flight_name}, {status: {$ne: "completed"}}]})
       .then(details =>{
         if(details){
           res.status(400);
+          //console.log(details);
         }else{
           const newrequestTracker = new requestTracker({
             customer_name: req.body.customer_name,
