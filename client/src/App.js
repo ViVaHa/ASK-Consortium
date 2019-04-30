@@ -13,6 +13,7 @@ import AdminManagementComponent from './Components/AdminManagementComponent'
 import AirlineRegisterComponent from './Components/AirlineRegisterComponent'
 import AirlineLoginComponent from './Components/AirlineLoginComponent'
 import AirlineLogoutComponent from './Components/AirlineLogoutComponent'
+import BalancesComponent from './Components/BalancesComponent'
 class App extends React.Component {
   constructor(){
     super();
@@ -74,6 +75,11 @@ class App extends React.Component {
                   : 'hidden'}>
                 <Link to={'/dashboard'} className="nav-link">Manage Requests</Link>
               </li>
+              <li className={this.state.isAgentLoggedIn
+                  ? 'nav-item'
+                  : 'hidden'}>
+                <Link to={'/balances'} className="nav-link">Settle Payments</Link>
+              </li>
               <li className={this.state.isLoggedIn
                   ? this.state.userType == "admin"
                     ? 'nav-item'
@@ -108,7 +114,8 @@ class App extends React.Component {
           <Route path='/airline_login' component={AirlineLoginComponent}/>
           <Route path='/airline_logout' component={AirlineLogoutComponent}/>
           <Route path="/airline_list" component={TodosList} />
-          <Route path="/dashboard" exact component={Dashboard} />
+          <Route path="/dashboard" component={Dashboard} />
+        <Route path="/balances" component={BalancesComponent} />
         </Switch>
       </div>
     </Router>)
