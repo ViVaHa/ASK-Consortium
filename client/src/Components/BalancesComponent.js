@@ -15,9 +15,7 @@ export default class BalancesComponent extends Component {
 
         }
 
-        this.verify=this.verify.bind(this);
-        this.updateTicket = this.updateTicket.bind(this);
-        this.updateRequest = this.updateRequest.bind(this);
+        
     }
         componentDidMount(){
             var myMap = new Map();
