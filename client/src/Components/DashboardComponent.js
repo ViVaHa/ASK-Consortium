@@ -114,6 +114,7 @@ export default class Dashboard extends Component {
           })
         }
         updateRequest(r, status){
+          var current = this;
           let nestedObj={}
             nestedObj.customer_name = r.customer_name;
             nestedObj.from_flight_name = r.from_flight_name;
@@ -128,7 +129,28 @@ export default class Dashboard extends Component {
               //this.props.history.push('/dashboard');
               //window.location.reload();
               if(status=="completed"){
-                this.setState({modalText:"Seat Changed successfully", modalHeading: "Success",showModal:true});
+                let obj = {};
+                obj.flight_name = r.to_flight_name;
+                obj.airline_name = r.to_airline_name;
+                axios.get('flight/getPrice', {params : {flight_name : r.to_flight_name,
+                airline_name:r.to_airline_name}})
+                .then((price)=>{
+                  let nestedObj = {};
+                  nestedObj.amount = price.data;
+                  nestedObj.lender = r.to_airline_name;
+                  nestedObj.borrower = r.from_airline_name;
+                  axios.put('balancesTracker/updateBalances', nestedObj)
+                  .then((response)=>{
+                    console.log(response);
+                    current.setState({modalText:"Seat Changed successfully", modalHeading: "Success",showModal:true});
+                  })
+                  .catch((err)=>{
+                    console.log(err);
+                  })
+                })
+                .catch((err)=>{
+                  console.log(err);
+                })
 
               }
             })

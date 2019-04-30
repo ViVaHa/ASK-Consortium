@@ -91,6 +91,25 @@ router.post('/add', (req,res) =>{
     });
   });
 
+
+  router.get('/getPrice', (req, res)=>{
+    let model=getDB(req.query.airline_name);
+    //console.log(model);
+    let flight_name = req.query.flight_name;
+
+    model.findOne({$and :[{name:req.query.flight_name}, {airline_name:req.query.airline_name}]},function(err,details){
+        if(err){
+            console.log(err);
+        } else {
+            console.log(details);
+            res.json(details.price);
+        }
+    });
+  });
+
+
+
+
   router.put('/update', (req,res) =>{
     console.log(req.body);
     let model=getDB(req.body.airline_name);

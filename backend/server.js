@@ -12,6 +12,7 @@ const ticket = require("./routes/ticketRoutes");
 const requestTracker = require("./routes/requestTrackerRoutes");
 const notifications = require('./routes/notifications');
 const admin = require('./routes/admin');
+const balancesTracker = require('./routes/balancesTracker');
 const database = require('./DBConnections').database;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +25,7 @@ app.use("/ticket", ticket);
 app.use("/changeFlights", requestTracker);
 app.use("/notifications", notifications);
 app.use("/admin", admin);
+app.use('/balancesTracker', balancesTracker);
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 
