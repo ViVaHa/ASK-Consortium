@@ -68,7 +68,7 @@ class App extends React.Component {
               <li className={this.state.isLoggedIn
                   ? 'nav-item'
                   : 'hidden'}>
-                <Link to={'/admin_manage'} className="nav-link">Approve/Reject Airlines </Link>
+                <Link to={'/admin_manage'} className="nav-link">Remove Airlines </Link>
               </li>
               <li className={this.state.isAgentLoggedIn
                   ? 'nav-item'

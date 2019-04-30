@@ -15,7 +15,7 @@ export default class BalancesComponent extends Component {
 
         }
 
-        
+
     }
         componentDidMount(){
             var myMap = new Map();
@@ -73,7 +73,7 @@ export default class BalancesComponent extends Component {
         let row = balances.map((balance)=>
         <tr>
               <td>{balance.airline_name}</td>
-              <td>{balance.amount}</td>
+            <td>{balance.amount} wei</td>
             <td><Button variant="info"  onClick={this.settlePayment.bind(this, balance)}>Settle</Button></td>
         </tr>
         );

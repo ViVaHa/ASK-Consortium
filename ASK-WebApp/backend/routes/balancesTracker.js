@@ -21,7 +21,7 @@ router.put('/updateBalances', (req,res)=>{
   let myOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
   //console.log(req.body);
   //console.log(typeof req.body.amount);
-  Balances.findOneAndUpdate({$and:[{lender:req.body.lender}, {borrower:req.body.borrower}]}, { $set: { amount: req.body.amount }}, myOptions)
+  Balances.findOneAndUpdate({$and:[{lender:req.body.lender}, {borrower:req.body.borrower}]}, { $inc: { amount: req.body.amount }}, myOptions)
   .then((updated)=>{
     console.log(updated);
     res.status(200).json(updated);

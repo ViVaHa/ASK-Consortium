@@ -26,6 +26,7 @@ deleteAirline = e =>{
 console.log(e.target);
   axios.put("http://localhost:5000/admin/update/", this.state)
   .then(response => {
+    //blockchain
     window.location.reload();
   })
   .catch(error =>{
