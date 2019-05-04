@@ -13,6 +13,7 @@
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.0",
+    "sha256": "^0.2.0",
     "truffle-contract": "^4.0.13",
     "web3": "^1.0.0-beta.46"
   },

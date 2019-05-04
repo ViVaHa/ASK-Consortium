@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const key = require('../../keys');
 const requestTracker = require('../models/requestTracker').requestTrackerConsortium;
+const Mapping = require('../models/mapping').mappingConsortium;
 
 router.post('/add', (req,res) =>{
     //console.log(req.body);
@@ -24,7 +25,7 @@ router.post('/add', (req,res) =>{
           //console.log(newrequestTracker);
           newrequestTracker.save()
           .then((details) => {
-            
+
             res.status(200).json({success:'Added Succesfully'});
           })
           .catch(err => console.log(err));
@@ -46,7 +47,16 @@ router.post('/add', (req,res) =>{
 
 
 
+  router.get('/airlineMapping', (req,res)=>{
+    Mapping.findOne({airline:req.query.airline}, function(err,details){
+      if(!err){
+        res.status(200).json(details);
+      }else{
+        res.status(400).json(err);
+      }
+    });
 
+  })
 
   router.put('/update', (req,res) =>{
     console.log(req.body);

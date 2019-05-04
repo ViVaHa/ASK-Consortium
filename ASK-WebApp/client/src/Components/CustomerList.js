@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {DropdownButton, Dropdown, Button, Modal} from 'react-bootstrap';
-
-
+import data from '../loadBlockChainData';
 import '../App.css';
-
+const sha256 = require('sha256');
 
 
 export default class CustomerList extends Component {
@@ -34,6 +33,7 @@ export default class CustomerList extends Component {
          this.getCustomers = this.getCustomers.bind(this);
          this.getAlternateFlight = this.getAlternateFlight.bind(this);
          this.sendRequest = this.sendRequest.bind(this);
+         this.storeRequestInDB = this.storeRequestInDB.bind(this);
 
 
     }
@@ -51,8 +51,16 @@ export default class CustomerList extends Component {
         .catch(function(error){
             console.log(error);
         })
+        this.loadData();
     }
+    async loadData(){
+      this.data = await data;
+      this.consortiumInstance = this.data.contract;
+      this.web3 = this.data.web3;
+      this.account = await this.web3.eth.getAccounts();
+      console.log(this.account);
 
+    }
     getCustomers(){
         var listLink = "ticket/customers/" ;
         axios.get(listLink, {params : {"airline_name" : this.state.airline_name, flight_name: this.state.selectedFlight}})
@@ -106,28 +114,69 @@ export default class CustomerList extends Component {
 
       sendRequest(flight,e){
         console.log(flight);
-        console.log(this.state.airline_name, this.state.selectedFlight, this.state.selectedCustomer,flight.name)
+        console.log(this.state.airline_name, this.state.selectedFlight, this.state.selectedCustomer,flight.airline_name)
+        axios.get("changeFlights/airlineMapping/", {params:{"airline": flight.airline_name}})
+        .then((response)=>{
+          console.log(response);
+          flight.address = response.data.address;
+          this.storeRequestInDB(flight,e);
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+
+
+      }
+      async storeRequestinBC(flight, e){
+
+        this.account = await this.web3.eth.getAccounts();
+        var acct = String(this.account);
+        console.log(this.web3);
+        var stringToHash = this.state.airline_name.concat(this.state.selectedFlight);
+        //stringToHash = stringToHash.concat(this.state.selectedCustomer);
+        //stringToHash = stringToHash.concat(flight.airline_name);
+        //stringToHash = stringToHash.concat(this.state.flightDetails.from);
+        //stringToHash = stringToHash.concat(flight.name);
+        let shaHash = this.web3.utils.stringToHex(stringToHash);
+        shaHash = this.web3.utils.fromAscii(stringToHash).padEnd(66, '0');
+        console.log(shaHash);
+        this.consortiumInstance.methods.recordRequests(flight.address, shaHash).send({from: acct})
+        .on('transactionHash', (hash) => {
+          console.log(hash);
+        })
+        .on('error',(err)=>{
+          alert(err);
+        })
+        this.consortiumInstance.events.RequestRecorded({filter: {fromBlock:'latest'}}, (error, event) => {
+          //console.log(this.hash);
+          if(event && event.blockHash!=this.hash){
+            this.hash = event.blockHash;
+            console.log(event);
+            this.setState({ isRequested: true });
+          }
+        })
+
+
+
+        //this.storeRequestInDB(flight,e);
+
+      }
+
+      storeRequestInDB=(flight,e)=>{
         axios.post("changeFlights/add/",
          {from_airline_name : this.state.airline_name, from_flight_name: this.state.selectedFlight ,
             customer_name: this.state.selectedCustomer, to_airline_name:flight.airline_name,
             from:this.state.flightDetails.from, to:this.state.flightDetails.to, status:"request_sent", to_flight_name:flight.name})
         .then(response =>{
-            console.log(response)
-            this.setState({ isRequested: true });
+            console.log(response);
+            this.storeRequestinBC(flight,e);
+
         })
         .catch(function(error){
             console.log(error);
             alert('Requested Already');
         })
-
-
       }
-      async storeRequest(){
-
-      }
-
-
-
 
 
 
