@@ -14,6 +14,11 @@ const notifications = require('./routes/notifications');
 const admin = require('./routes/admin');
 const balancesTracker = require('./routes/balancesTracker');
 const database = require('./DBConnections').database;
+const accounts = require('./functions/loadBlockChain')
+const fs= require('fs');
+const path = require('path');
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -32,9 +37,20 @@ app.listen(port, () => console.log(`Listening on port ${port}`));
 
 
 //console.log(obj)
-
-
-
+let source = fs.readFileSync(path.join(__dirname, '../../ASK-contract/build/contracts/Consortium.json'));
+let abi = JSON.parse(source)["abi"];
+let json =JSON.parse(source);
+let address = json.networks["5777"].address
+let obj={};
+obj.abi = abi;
+obj.address = address;
+fs.writeFile('../client/src/Consortium.json', JSON.stringify(obj, null, 2), 'utf8', function (err) {
+    if (err) {
+        console.log("An error occured while writing JSON Object to File.");
+        return console.log(err);
+    }
+    console.log("JSON file has been saved.");
+})
 
 
 

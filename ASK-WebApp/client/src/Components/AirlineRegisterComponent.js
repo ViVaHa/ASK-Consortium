@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link, Switch} from 'react-router-dom';
 import axios from 'axios';
+import data from '../loadBlockChainData';
 export default class AirlineRegisterComponent extends Component{
   constructor(props){
     super(props);
@@ -11,31 +12,76 @@ export default class AirlineRegisterComponent extends Component{
     }
   }
   componentDidMount(){
+    this.loadData();
 
+  }
+  async loadData(){
+    this.data = await data;
+    this.consortiumInstance = this.data.contract;
+    this.web3 = this.data.web3;
+    this.account = await this.web3.eth.getAccounts();
+
+  }
+  async getAccount(){
+    this.account = await this.web3.eth.getAccounts();
+    console.log(this.account);
   }
   onChange = (e)=>{
     this.setState({[e.target.id] : e.target.value});
   }
   onSubmit = (e)=>{
     e.preventDefault();
+
+    //var account = this.web3.eth.accounts.defaultAccount;
     let obj = {};
-    obj.agent = this.state.name;
     obj.airline = this.state.airline;
-    obj.password = this.state.airline;
-    axios.post('/session/register', obj)
+    axios.post('/session/checkValid')
     .then((res)=>{
       if(res.status==200){
-        console.log(res);
-        alert('Registration complete');
-        this.props.history.push('//airline_login');
-
-        window.location.reload();
-      }else{
-        console.log("Server Error");
+        this.recordRegistration();
       }
     })
     .catch((err)=>{
-      console.log(err);
+      alert('Already exists');
+    })
+  }
+
+  async recordRegistration(){
+    this.account = await this.web3.eth.getAccounts();
+    var acct = String(this.account);
+    console.log(this.web3);
+    this.consortiumInstance.methods.registerAirline().send({from: acct, value: this.web3.utils.toWei('5')})
+    .on('transactionHash', (hash) => {
+      console.log(hash);
+    })
+    .on('error',(err)=>{
+      alert('Already Registered');
+    })
+    this.consortiumInstance.events.Registered({filter: {}}, (error, event) => {
+      console.log("Triggered");
+      if(event){
+        console.log(event);
+        let obj = {};
+        obj.agent = this.state.name;
+        obj.airline = this.state.airline;
+        obj.password = this.state.airline;
+        axios.post('/session/register', obj)
+        .then((res)=>{
+          if(res.status==200){
+            console.log(res);
+            //alert('Registration complete');
+            //this.props.history.push('/airline_login');
+
+            //window.location.reload();
+          }else{
+            console.log("Server Error");
+          }
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+      }
+
     })
   }
 

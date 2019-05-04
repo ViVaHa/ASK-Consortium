@@ -14,6 +14,12 @@ import AirlineRegisterComponent from './Components/AirlineRegisterComponent'
 import AirlineLoginComponent from './Components/AirlineLoginComponent'
 import AirlineLogoutComponent from './Components/AirlineLogoutComponent'
 import BalancesComponent from './Components/BalancesComponent'
+import Web3 from 'web3';
+import myData from './CounterDetails.json';
+import data from './loadBlockChainData'
+//import CounterJSON from './Counter.json'
+const TruffleContract = require("truffle-contract");
+
 class App extends React.Component {
   constructor(){
     super();
@@ -21,6 +27,7 @@ class App extends React.Component {
       isLoggedIn:false,
       isAgentLoggedIn:false
     }
+
   }
   componentDidMount(){
 
@@ -41,7 +48,53 @@ class App extends React.Component {
     }
     //this.setState({isLoggedIn:true});
     //console.log(this.state);
+    //
+    //
+    //
+    this.ABI = myData.abi;
+    this.ADDRESS = myData.address;
+    console.log(this.ABI);
+    console.log(this.ADDRESS);
+
+    this.loadData();
   }
+  async loadData(){
+      /*
+      this.data = await data;
+
+      var counter = this.data.contract;
+      var web3 = this.data.web3;
+      console.log(counter);
+      console.log(web3);
+      const accounts = await web3.eth.getAccounts();
+      web3.eth.getAccounts().then(function(result){
+        console.log(result);
+      })
+      var account = web3.eth.accounts._defaultAccount;
+      var acct = String(accounts);
+      counter.methods.increment(1).send({from: acct})
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+      })
+
+        counter.events.Incremented({
+            filter: {}, // Using an array means OR: e.g. 20 or 23
+        }, (error, event) => {
+          console.log("Triggered");
+          console.log(event); })
+        .on('data', (event) => {
+            console.log("DATA");
+            console.log(event); // same results as the optional callback above
+        })
+        .on('changed', (event) => {
+            // remove event from local database
+            console.log("Changed");
+        })
+        .on('error', console.error);
+        */
+
+  }
+
   render() {
     return (<Router>
       <div className='container'>

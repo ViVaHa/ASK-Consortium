@@ -5,17 +5,6 @@ const Balances = require('../models/balances').balancesConsortium
 
 const Agents = require('../models/agents').agentConsortium;
 
-const getCounterParts=(airline_name)=>{
-
-
-}
-
-
-const retrieveBalances = (lender, borrower)=>{
-
-
-}
-
 
 router.put('/updateBalances', (req,res)=>{
   let myOptions = { upsert: true, new: true, setDefaultsOnInsert: true };

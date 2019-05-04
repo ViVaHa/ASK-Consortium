@@ -40,7 +40,17 @@ router.post('/register', function(req, res) {
 
 
 
+router.post('/checkValid', (req,res)=>{
+  Agent.findOne({airline: req.body.airline}).then((agent) => {
+    if (agent) {
+      console.log('Already Exists');
+      res.status(400).send({error:"Already Exists"});
+    } else {
+      res.status(200).json('success: Can Register');
+    }
+  })
 
+})
 
 router.post('/login', (req,res)=>{
   let {errors, isValid} = validation(req.body);

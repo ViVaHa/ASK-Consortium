@@ -19,15 +19,15 @@ router.post('/register/', (req,res) =>{
           .catch(err => console.log(err));
         }
       });
-    
-  
+
+
   });
 
 
   router.get('/test', (req,res) =>{
-    console.log("hi"); 
+    console.log("hi");
     res.json({"Hi":1});
-  
+
   });
 
 
