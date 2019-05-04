@@ -8,8 +8,8 @@ router.post('/add', (req,res) =>{
     requestTracker.findOne({$and : [{customer_name:req.body.customer_name}, {from_airline_name : req.body.from_airline_name}, {from_flight_name:req.body.from_flight_name}, {status: {$eq: "request_sent"}}]})
       .then(details =>{
         if(details){
-          res.status(400);
-          //console.log(details);
+          res.status(400).json({error: 'Already Requested'});
+          console.log(details);
         }else{
           const newrequestTracker = new requestTracker({
             customer_name: req.body.customer_name,
@@ -24,12 +24,12 @@ router.post('/add', (req,res) =>{
           //console.log(newrequestTracker);
           newrequestTracker.save()
           .then((details) => {
-            //console.log(details);
-            res.status(200)})
+            
+            res.status(200).json({success:'Added Succesfully'});
+          })
           .catch(err => console.log(err));
         }
       });
-      res.json({});
 
   });
 

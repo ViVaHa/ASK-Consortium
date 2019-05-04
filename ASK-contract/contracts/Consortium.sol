@@ -40,11 +40,13 @@ contract Consortium{
         airline.transfer(amount);
     }
     function recordRequests(address to, bytes32 details) public isActive(msg.sender) isActive(to){
+        require(msg.sender!=to, "Sender cannot be same as receiver");
         bytes32 hash = keccak256(abi.encodePacked(to, details));
         requests[msg.sender] = hash;
         emit RequestRecorded(to, "Recorded Successfully");
     }
     function recordResponses(address to, bytes32 details) public isActive(msg.sender) isActive(to){
+        require(msg.sender!=to, "Sender cannot be same as receiver");
         bytes32 hash = keccak256(abi.encodePacked(to, details));
         responses[msg.sender] = hash;
         emit ResponseRecorded(to, "Recorded Successfully");

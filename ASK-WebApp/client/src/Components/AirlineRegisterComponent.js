@@ -57,9 +57,12 @@ export default class AirlineRegisterComponent extends Component{
     .on('error',(err)=>{
       alert('Already Registered');
     })
-    this.consortiumInstance.events.Registered({filter: {}}, (error, event) => {
-      console.log("Triggered");
-      if(event){
+    this.hash = null;
+    this.consortiumInstance.events.Registered({filter: {fromBlock:'latest'}}, (error, event) => {
+      console.log(this.hash);
+      if(event && event.blockHash!=this.hash){
+        this.hash = event.blockHash;
+        console.log(this.event);
         console.log(event);
         let obj = {};
         obj.agent = this.state.name;
@@ -69,6 +72,7 @@ export default class AirlineRegisterComponent extends Component{
         .then((res)=>{
           if(res.status==200){
             console.log(res);
+            this.mapAccount(acct);
             //alert('Registration complete');
             //this.props.history.push('/airline_login');
 
@@ -83,6 +87,19 @@ export default class AirlineRegisterComponent extends Component{
       }
 
     })
+  }
+  mapAccount = (acct)=>{
+    let obj={};
+    obj.airline = this.state.airline;
+    obj.address = acct;
+    axios.post('/session/map',obj)
+    .then((res)=>{
+      console.log(res);
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+
   }
 
   render(){

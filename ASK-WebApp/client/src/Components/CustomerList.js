@@ -113,15 +113,18 @@ export default class CustomerList extends Component {
             from:this.state.flightDetails.from, to:this.state.flightDetails.to, status:"request_sent", to_flight_name:flight.name})
         .then(response =>{
             console.log(response)
+            this.setState({ isRequested: true });
         })
         .catch(function(error){
             console.log(error);
-
+            alert('Requested Already');
         })
-        this.setState({ isRequested: true });
+
 
       }
+      async storeRequest(){
 
+      }
 
 
 

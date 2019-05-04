@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const validation = require('../functions/Registration');
 const Agent = require('../models/agents').agentConsortium;
+const Mapping = require('../models/mapping').mappingConsortium;
 
 router.post('/register', function(req, res) {
   let {errors, isValid} = validation(req.body);
@@ -38,7 +39,30 @@ router.post('/register', function(req, res) {
 })
 
 
-
+router.post('/map',(req,res)=>{
+  let obj={};
+  obj.airline = req.body.airline;
+  obj.address = req.body.address;
+  Mapping.findOne({airline: obj.airline}).then((airline)=>{
+    if(airline){
+      console.log(airline);
+      res.status(400).json(airline);
+    }else{
+      new Mapping(obj).save()
+      .then((newAirline)=>{
+        res.status(200).json(newAirline);
+      })
+      .catch((err)=>{
+        console.log(err);
+        res.status(400).json(err);
+      })
+    }
+  })
+  .catch((err)=>{
+    console.log(err);
+    res.status(400).json(err);
+  })
+})
 
 router.post('/checkValid', (req,res)=>{
   Agent.findOne({airline: req.body.airline}).then((agent) => {
@@ -51,6 +75,11 @@ router.post('/checkValid', (req,res)=>{
   })
 
 })
+
+
+
+
+
 
 router.post('/login', (req,res)=>{
   let {errors, isValid} = validation(req.body);
