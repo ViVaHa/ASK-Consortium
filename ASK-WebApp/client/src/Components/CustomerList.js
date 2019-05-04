@@ -3,7 +3,6 @@ import axios from 'axios';
 import {DropdownButton, Dropdown, Button, Modal} from 'react-bootstrap';
 import data from '../loadBlockChainData';
 import '../App.css';
-const sha256 = require('sha256');
 
 
 export default class CustomerList extends Component {

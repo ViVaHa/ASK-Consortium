@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {DropdownButton, Dropdown, Button, Modal} from 'react-bootstrap';
 import AlertModal from './AlertModalComponent'
-
+import data from '../loadBlockChainData';
 export default class Dashboard extends Component {
 
     constructor(props){
@@ -45,6 +45,14 @@ export default class Dashboard extends Component {
             .catch(function(error){
                 console.log(error);
             })
+            this.loadData();
+        }
+        async loadData(){
+          this.data = await data;
+          this.consortiumInstance = this.data.contract;
+          this.web3 = this.data.web3;
+          this.account = await this.web3.eth.getAccounts();
+
         }
 
         verify(r,event){
@@ -142,7 +150,17 @@ export default class Dashboard extends Component {
                   axios.put('balancesTracker/updateBalances', nestedObj)
                   .then((response)=>{
                     console.log(response);
-                    current.setState({modalText:"Seat Changed successfully", modalHeading: "Success",showModal:true});
+                    axios.get("changeFlights/airlineMapping/", {params:{"airline": r.from_airline_name}})
+                    .then((response)=>{
+                      console.log(response);
+                      r.address = response.data.address;
+                      this.recordResponse(r, status);
+                    })
+                    .catch((err)=>{
+                      console.log(err);
+                    })
+
+                    //current.setState({modalText:"Seat Changed successfully", modalHeading: "Success",showModal:true});
                   })
                   .catch((err)=>{
                     console.log(err);
@@ -159,11 +177,41 @@ export default class Dashboard extends Component {
             })
         }
 
+        async recordResponse(r, status){
+          this.account = await this.web3.eth.getAccounts();
+          var acct = String(this.account);
+          console.log(this.web3);
+          console.log(r.address);
+          var stringToHash = this.state.airline_name.concat(this.state.selectedFlight);
 
+          stringToHash = stringToHash.concat(this.state.selectedCustomer);
+          //stringToHash = stringToHash.concat(flight.airline_name);
+          //stringToHash = stringToHash.concat(this.state.flightDetails.from);
+          //stringToHash = stringToHash.concat(flight.name);
+          let shaHash = this.web3.utils.stringToHex(stringToHash);
+          shaHash = this.web3.utils.fromAscii(stringToHash).padEnd(66, '0');
+          console.log(shaHash);
+          this.consortiumInstance.methods.recordResponses(r.address, shaHash).send({from: acct})
+          .on('transactionHash', (hash) => {
+            console.log(hash);
+          })
+          .on('error',(err)=>{
+            alert(err);
+          })
+          this.consortiumInstance.events.ResponseRecorded({filter: {fromBlock:'latest'}}, (error, event) => {
+            //console.log(this.hash);
+            if(event && event.blockHash!=this.hash){
+              this.hash = event.blockHash;
+              console.log(event);
+              this.setState({ isRequested: true });
+            }
+          })
+        }
 
         rejectRequest(request, event){
             this.setState({modalText:"Rejecting request"})
             this.updateRequest(request, "rejected");
+            this.recordResponse(request, "rejected");
             this.setState({showModal:true, modalHeading:"Rejected"});
         }
 
