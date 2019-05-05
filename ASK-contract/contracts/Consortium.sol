@@ -12,6 +12,7 @@ contract Consortium{
     event Registered(address airline, string data);
     event RequestRecorded(address airline, string data);
     event ResponseRecorded(address airline, string data);
+    event Settled(address lender, address borrower);
     constructor() payable public{
         chairperson = msg.sender;
     }
@@ -51,7 +52,12 @@ contract Consortium{
         responses[msg.sender] = hash;
         emit ResponseRecorded(to, "Recorded Successfully");
     }
-
+    function settleBalances(address lender, uint amount) public isActive(msg.sender) isActive(lender){
+        require(airlines[msg.sender].escrowAmount>=amount, "Insufficient Balance");
+        airlines[msg.sender].escrowAmount-=amount;
+        airlines[lender].escrowAmount+=amount;
+        emit Settled(msg.sender, lender);
+    }
 
 
 }

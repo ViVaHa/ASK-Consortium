@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import {DropdownButton, Dropdown, Button, Modal} from 'react-bootstrap';
-import AlertModal from './AlertModalComponent'
-
+import PromptModal from './PromptModalComponent'
+import data from '../loadBlockChainData';
 export default class BalancesComponent extends Component {
 
     constructor(props){
@@ -51,8 +51,14 @@ export default class BalancesComponent extends Component {
             .catch((err)=>{
               console.log(err);
             })
-
+            this.loadData();
         }
+    async loadData(){
+      this.data = await data;
+      this.consortiumInstance = this.data.contract;
+      this.web3 = this.data.web3;
+      this.account = await this.web3.eth.getAccounts();
+    }
     alertClose = e =>{
       //blockchain
       this.setState({showAlertModal : false});
@@ -61,20 +67,89 @@ export default class BalancesComponent extends Component {
     }
 
     settlePayment(balance, event){
-      console.log(balance);
+      this.setState({tempAirline : balance.airline_name, amount:balance.amount});
       this.setState({modalText:"Click to settle Payment"})
       this.setState({modalHeading:"Settle?",showModal:true});
-
-
     }
 
+
+
+    settle=()=>{
+      let obj={};
+      axios.get("changeFlights/airlineMapping/", {params:{"airline": this.state.tempAirline}})
+      .then((response)=>{
+        //console.log(response);
+        obj.lender = response.data.address;
+        axios.get("changeFlights/airlineMapping/", {params:{"airline": this.state.airline_name}})
+        .then((response)=>{
+          obj.borrower = response.data.address;
+          if(this.state.amount<0){
+            let temp = obj.borrower;
+            obj.borrower = obj.lender;
+            obj.lender = temp;
+            let tempAmount = -this.state.amount;
+            this.setState({amount:tempAmount});
+            console.log(this.state.amount);
+          }
+          this.setState({lender: obj.lender, borrower:obj.borrower});
+          //this.settleBalances(obj);
+          this.settleInBC();
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    }
+    async settleInBC(){
+      this.account = await this.web3.eth.getAccounts();
+      var acct = String(this.account);
+      console.log(this.state);
+      this.consortiumInstance.methods.settleBalances(this.state.lender, this.state.amount).send({from: this.state.borrower})
+      .on('transactionHash', (hash) => {
+        console.log(hash);
+      })
+      .on('error',(err)=>{
+        alert(err);
+      })
+      this.hash = null;
+      this.consortiumInstance.events.Settled({filter: {fromBlock:'latest'}}, (error, event) => {
+        console.log(this.hash);
+        if(event && event.blockHash!=this.hash){
+          this.hash = event.blockHash;
+          console.log(event);
+          //this.alertClose();
+          this.updateDB();
+        }
+      })
+    }
+    updateDB=()=>{
+      let obj={};
+      obj.lender = this.state.airline_name;
+      obj.borrower = this.state.tempAirline;
+      obj.amount = 0;
+      axios.put('balancesTracker/nullifyBalance', obj)
+      .then((response)=>{
+        console.log(response);
+        let obj={};
+        obj.borrower = this.state.airline_name;
+        obj.lender = this.state.tempAirline;
+        obj.amount = 0;
+        axios.put('balancesTracker/nullifyBalance', obj)
+        .then((response)=>{
+          console.log(response);
+        });
+      });
+    }
     render() {
         let balances = this.state.balances;
         let row = balances.map((balance)=>
         <tr>
               <td>{balance.airline_name}</td>
-            <td>{balance.amount} wei</td>
-            <td><Button variant="info"  onClick={this.settlePayment.bind(this, balance)}>Settle</Button></td>
+            <td>{balance.amount} ethers</td>
+          <td><Button variant="info"  onClick={this.settlePayment.bind(this, balance)} disabled={balance.amount===0}>Settle</Button></td>
         </tr>
         );
         return(
@@ -97,13 +172,16 @@ export default class BalancesComponent extends Component {
                         {row}
                 </tbody>
                 </table>
-                <AlertModal
+                <PromptModal
                     show = {this.state.showModal}
-                    close = {this.alertClose}
+                    primaryaction = {this.settle}
                     heading = {this.state.modalHeading}
                     body = {this.state.modalText}
-                    text = "Settle Payment"/>
-
+                    close = {this.alertClose}
+                    primarytext = "Settle"
+                    secondarytext = "Close"
+                    heading = "Do you want to Settle for sure?"
+                    body = "If Yes Press Settle else click the button close"/>
         </div>
         )
     }

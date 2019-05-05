@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import data from '../loadBlockChainData';
 const Airline = props=>(
     <tr>
         <td className = {props.airline.status=="dismissed" ? 'hidden' : ' ' }>{props.airline.airline}</td>

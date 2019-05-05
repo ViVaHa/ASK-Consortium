@@ -22,6 +22,22 @@ router.put('/updateBalances', (req,res)=>{
 })
 
 
+router.put('/nullifyBalance', (req,res)=>{
+  let myOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
+  //console.log(req.body);
+  //console.log(typeof req.body.amount);
+  Balances.findOneAndUpdate({$and:[{lender:req.body.lender}, {borrower:req.body.borrower}]}, { $set: { amount: req.body.amount }}, myOptions)
+  .then((updated)=>{
+    console.log(updated);
+    res.status(200).json(updated);
+  })
+  .catch((err)=>{
+    console.log(err);
+    res.status(400).json(err);
+  })
+})
+
+
 
 router.get('/getCounterParts', (req,res)=>{
   let airline_name = req.query.airline_name;

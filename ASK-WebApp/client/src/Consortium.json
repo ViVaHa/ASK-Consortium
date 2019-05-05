@@ -145,6 +145,24 @@
       "signature": "0x49284608e2bcec158fa3c9ebd3334801dea6d98fbbb484600071dca30625f6d1"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "lender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "borrower",
+          "type": "address"
+        }
+      ],
+      "name": "Settled",
+      "type": "event",
+      "signature": "0x3352c33cf4ae7f0a850208dc1ce7e1462af666d38c52ae55a504c89bd6d26c30"
+    },
+    {
       "constant": false,
       "inputs": [],
       "name": "registerAirline",
@@ -206,7 +224,26 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x3807566f"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "lender",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "settleBalances",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xbefa7bcc"
     }
   ],
-  "address": "0xf5731Bf6ef89Eb1C6564C2799bFE4D0003487819"
+  "address": "0xea8021c68ea16AFa0333333886400de56F4382F9"
 }
