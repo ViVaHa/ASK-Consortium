@@ -50,7 +50,7 @@ export default class AirlineRegisterComponent extends Component{
     this.account = await this.web3.eth.getAccounts();
     var acct = String(this.account);
     console.log(this.web3);
-    this.consortiumInstance.methods.registerAirline().send({from: acct, value: this.web3.utils.toWei('5')})
+    this.consortiumInstance.methods.registerAirline().send({from: acct, value: this.web3.utils.toWei('50')})
     .on('transactionHash', (hash) => {
       console.log(hash);
     })

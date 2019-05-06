@@ -21,22 +21,28 @@ export default class BalancesComponent extends Component {
             var myMap = new Map();
             axios.get('balancesTracker/amountLent', {params:{lender:this.state.airline_name}})
             .then((balances)=>{
+              console.log(balances);
               let details = balances.data.result;
               for(var i=0;i<details.length;i++){
                   if(details[i].amount>0){
-                    myMap.set(details[i].borrower, details[i].amount);
+                    myMap.set(details[i].borrower, -details[i].amount);
                   }else{
                     myMap.set(details[i].borrower, 0);
                   }
               }
               axios.get('balancesTracker/amountBorrowed', {params:{lender:this.state.airline_name}})
               .then((balances)=>{
+                console.log(balances);
                 let details = balances.data.result;
                 for(var i=0;i<details.length;i++){
                     console.log(details[i].lender);
                     let amt = myMap.get(details[i].lender);
-                    if(amt)
-                      myMap.set(details[i].lender, amt - details[i].amount);
+                    if(amt){
+                      myMap.set(details[i].lender, details[i].amount+amt);
+                    }else{
+                      myMap.set(details[i].lender, details[i].amount);
+                    }
+
                 }
                 let objects=[]
                 for (var [key, value] of myMap) {
@@ -107,7 +113,9 @@ export default class BalancesComponent extends Component {
       this.account = await this.web3.eth.getAccounts();
       var acct = String(this.account);
       console.log(this.state);
-      this.consortiumInstance.methods.settleBalances(this.state.lender, this.state.amount).send({from: this.state.borrower})
+      let amt = this.web3.utils.toWei(this.state.amount.toString())
+      console.log(amt);
+      this.consortiumInstance.methods.settleBalances(this.state.lender, amt).send({from: this.state.borrower})
       .on('transactionHash', (hash) => {
         console.log(hash);
       })
@@ -139,7 +147,7 @@ export default class BalancesComponent extends Component {
         obj.amount = 0;
         axios.put('balancesTracker/nullifyBalance', obj)
         .then((response)=>{
-          console.log(response);
+          this.alertClose();
         });
       });
     }
@@ -149,7 +157,7 @@ export default class BalancesComponent extends Component {
         <tr>
               <td>{balance.airline_name}</td>
             <td>{balance.amount} ethers</td>
-          <td><Button variant="info"  onClick={this.settlePayment.bind(this, balance)} disabled={balance.amount===0}>Settle</Button></td>
+          <td><Button variant="info"  onClick={this.settlePayment.bind(this, balance)} disabled={balance.amount<=0}>Settle</Button></td>
         </tr>
         );
         return(
@@ -163,7 +171,7 @@ export default class BalancesComponent extends Component {
                 <thead className="thead-dark">
                     <tr>
                     <th scope="col">Airline</th>
-                    <th scope="col">Amount owned</th>
+                    <th scope="col">Amount owed</th>
                   <th scope="col">Actions</th>
 
                     </tr>

@@ -119,6 +119,24 @@
         {
           "indexed": false,
           "name": "data",
+          "type": "uint256"
+        }
+      ],
+      "name": "Unregistered",
+      "type": "event",
+      "signature": "0x15f7469572dc44ee54c08cc4adf4e1031d7b6254626e8894015195a560039d09"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "airline",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "data",
           "type": "string"
         }
       ],
@@ -245,5 +263,5 @@
       "signature": "0xbefa7bcc"
     }
   ],
-  "address": "0xea8021c68ea16AFa0333333886400de56F4382F9"
+  "address": "0xfa133468960859ADd21EF4dC74231Ab62F834bd5"
 }

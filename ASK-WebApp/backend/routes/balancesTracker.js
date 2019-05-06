@@ -8,7 +8,7 @@ const Agents = require('../models/agents').agentConsortium;
 
 router.put('/updateBalances', (req,res)=>{
   let myOptions = { upsert: true, new: true, setDefaultsOnInsert: true };
-  //console.log(req.body);
+  console.log(req.body);
   //console.log(typeof req.body.amount);
   Balances.findOneAndUpdate({$and:[{lender:req.body.lender}, {borrower:req.body.borrower}]}, { $inc: { amount: req.body.amount }}, myOptions)
   .then((updated)=>{

@@ -10,6 +10,7 @@ contract Consortium{
     mapping(address => bytes32) public responses;
     mapping(address => Airline) public airlines;
     event Registered(address airline, string data);
+    event Unregistered(address airline, uint data);
     event RequestRecorded(address airline, string data);
     event ResponseRecorded(address airline, string data);
     event Settled(address lender, address borrower);
@@ -39,6 +40,7 @@ contract Consortium{
         uint amount = airlines[airline].escrowAmount;
         airlines[airline].escrowAmount=0;
         airline.transfer(amount);
+        emit Unregistered(msg.sender, amount);
     }
     function recordRequests(address to, bytes32 details) public isActive(msg.sender) isActive(to){
         require(msg.sender!=to, "Sender cannot be same as receiver");

@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 import data from '../loadBlockChainData';
+var web3;
+var consortiumInstance;
 const Airline = props=>(
     <tr>
         <td className = {props.airline.status=="dismissed" ? 'hidden' : ' ' }>{props.airline.airline}</td>
@@ -24,14 +26,52 @@ class DeleteButton extends Component{
       }
   }
 deleteAirline = e =>{
-console.log(e.target);
-  axios.put("http://localhost:5000/admin/update/", this.state)
-  .then(response => {
-    //blockchain
-    window.location.reload();
+  this.unregister();
+  //console.log(e.target);
+
+}
+async unregister(){
+  console.log(consortiumInstance.methods);
+  let account = await web3.eth.getAccounts();
+  var acct = String(account);
+  axios.get("changeFlights/airlineMapping/", {params:{"airline": this.state.airline}})
+  .then((response)=>{
+    console.log(response);
+    let address = response.data.address;
+    consortiumInstance.methods.unregisterAirline(address).send({from: acct})
+    .on('transactionHash', (hash) => {
+      console.log(hash);
+      // axios.put("http://localhost:5000/admin/update/", this.state)
+      // .then(response => {
+      //   //blockchain
+      //   window.location.reload();
+      // })
+      // .catch(error =>{
+      //   console.log(error);
+      // })
+    })
+    .on('error',(err)=>{
+      alert(err);
+    })
+    this.hash = null;
+    consortiumInstance.events.Unregistered({filter: {fromBlock:'latest'}}, (error, event) => {
+      console.log(this.hash);
+      if(event && event.blockHash!=this.hash){
+        this.hash = event.blockHash;
+        axios.put("http://localhost:5000/admin/update/", this.state)
+        .then(response => {
+          console.log(response);
+          //window.location.reload();
+        })
+        .catch(error =>{
+          console.log(error);
+        })
+      }
+
+    })
   })
-  .catch(error =>{
-    console.log(error);
+  .catch((err)=>{
+    console.log(err);
   })
 }
 
@@ -108,9 +148,15 @@ export default class AdminManagementComponent extends Component{
         .catch(function(error){
             console.log(error);
         })
+        this.loadData();
     }
 
-
+    async loadData(){
+      this.data = await data;
+      consortiumInstance = this.data.contract;
+      web3 = this.data.web3;
+      //this.account = await this.web3.eth.getAccounts();
+    }
 
 
     onLoadMore() {

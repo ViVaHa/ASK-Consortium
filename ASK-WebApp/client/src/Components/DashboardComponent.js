@@ -143,6 +143,7 @@ export default class Dashboard extends Component {
                 axios.get('flight/getPrice', {params : {flight_name : r.to_flight_name,
                 airline_name:r.to_airline_name}})
                 .then((price)=>{
+                  console.log(price);
                   let nestedObj = {};
                   nestedObj.amount = price.data;
                   nestedObj.lender = r.to_airline_name;
@@ -211,7 +212,16 @@ export default class Dashboard extends Component {
         rejectRequest(request, event){
             this.setState({modalText:"Rejecting request"})
             this.updateRequest(request, "rejected");
-            this.recordResponse(request, "rejected");
+            axios.get("changeFlights/airlineMapping/", {params:{"airline": request.from_airline_name}})
+            .then((response)=>{
+              console.log(response);
+              request.address = response.data.address;
+              this.recordResponse(request, "rejected");
+            })
+            .catch((err)=>{
+              console.log(err);
+            })
+
             this.setState({showModal:true, modalHeading:"Rejected"});
         }
 

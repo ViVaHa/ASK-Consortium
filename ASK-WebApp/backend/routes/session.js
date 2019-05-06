@@ -19,7 +19,7 @@ router.post('/register', function(req, res) {
   // }
 
   if (Object.entries(errors).length === 0 && errors.constructor === Object) {
-    Agent.findOne({airline: obj.airline}).then((agent) => {
+    Agent.findOne({airline: obj.airline, status:"approved"}).then((agent) => {
       if (agent) {
         console.log('Already Exists');
         res.status(400).send({error:"Already Exists"});
