@@ -109,7 +109,7 @@ router.post('/login', (req,res)=>{
   obj.password = req.body.password;
   console.log(errors);
   if (Object.entries(errors).length === 0 && errors.constructor === Object) {
-    Agent.findOne({$and : [{name:req.body.agent},{airline:req.body.airline},{status : {$eq:"approved"}}]})
+    Agent.findOne({$and : [{name:req.body.agent},{airline:req.body.airline},{password:req.body.password},{status : {$eq:"approved"}}]})
     .then((agent)=>{
       if(!agent){
         res.status(400).send("No such user");

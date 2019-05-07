@@ -133,7 +133,8 @@ export default class CustomerList extends Component {
         this.account = await this.web3.eth.getAccounts();
         var acct = String(this.account);
         console.log(acct);
-        var stringToHash = this.state.airline_name.concat(this.state.selectedFlight);
+        console.log(this.state.selectedCustomer);
+        var stringToHash = flight.airline_name.concat(this.state.selectedFlight);
         //stringToHash = stringToHash.concat(this.state.selectedCustomer);
         //stringToHash = stringToHash.concat(flight.airline_name);
         //stringToHash = stringToHash.concat(this.state.flightDetails.from);
@@ -202,6 +203,7 @@ export default class CustomerList extends Component {
               <tr >
                   <td>{flight.name}</td>
                   <td>{flight.airline_name}</td>
+                <td>{flight.price}</td>
                   <td>
                   <Button variant="dark" onClick={this.sendRequest.bind(this, flight)} >Change flight</Button>
                   </td>
@@ -256,6 +258,7 @@ export default class CustomerList extends Component {
                     <tr>
                     <th scope="col">flight name</th>
                     <th scope="col">Airline </th>
+                    <th scope="col">Price </th>
                     <th scope="col">choose </th>
                     </tr>
                 </thead>

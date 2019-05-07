@@ -216,6 +216,7 @@ export default class CustomerRequestsComponent extends Component {
             <tr >
                 <td>{flight.name}</td>
                 <td>{flight.airline_name}</td>
+              <td>{flight.price} ethers</td>
                 <td>
                 <Button variant="dark" onClick={this.sendRequest.bind(this, flight)} >Change flight</Button>
                 </td>
@@ -259,6 +260,7 @@ export default class CustomerRequestsComponent extends Component {
                     <tr>
                     <th scope="col">flight name</th>
                     <th scope="col">Airline </th>
+                    <th scope="col">Price </th>
                     <th scope="col">choose </th>
                     </tr>
                 </thead>
