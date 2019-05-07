@@ -100,8 +100,11 @@ export default class CustomerList extends Component {
         {params : {"airline_name" : this.state.airline_name,
         from: this.state.flightDetails.from , to: this.state.flightDetails.to}})
         .then(response =>{
-
-            this.setState({alternateFlights:response.data})
+            console.log(response.data[0]);
+            var final = response.data[0] ;
+            for(var i =  1; i <response.data.length; i ++)
+               final = final.concat(response.data[i]);
+            this.setState({alternateFlights: final})
 
         })
         .catch(function(error){
@@ -118,7 +121,7 @@ export default class CustomerList extends Component {
         .then((response)=>{
           console.log(response);
           flight.address = response.data.address;
-          this.storeRequestInDB(flight,e);
+          this.storeRequestinBC(flight,e);
         })
         .catch((err)=>{
           console.log(err);
@@ -127,10 +130,9 @@ export default class CustomerList extends Component {
 
       }
       async storeRequestinBC(flight, e){
-
         this.account = await this.web3.eth.getAccounts();
         var acct = String(this.account);
-        console.log(this.web3);
+        console.log(acct);
         var stringToHash = this.state.airline_name.concat(this.state.selectedFlight);
         //stringToHash = stringToHash.concat(this.state.selectedCustomer);
         //stringToHash = stringToHash.concat(flight.airline_name);
@@ -138,7 +140,7 @@ export default class CustomerList extends Component {
         //stringToHash = stringToHash.concat(flight.name);
         let shaHash = this.web3.utils.stringToHex(stringToHash);
         shaHash = this.web3.utils.fromAscii(stringToHash).padEnd(66, '0');
-        console.log(shaHash);
+        console.log(flight.address);
         this.consortiumInstance.methods.recordRequests(flight.address, shaHash).send({from: acct})
         .on('transactionHash', (hash) => {
           console.log(hash);
@@ -151,6 +153,7 @@ export default class CustomerList extends Component {
           if(event && event.blockHash!=this.hash){
             this.hash = event.blockHash;
             console.log(event);
+            this.storeRequestInDB(flight,e);
             this.setState({ isRequested: true });
           }
         })
@@ -168,8 +171,6 @@ export default class CustomerList extends Component {
             from:this.state.flightDetails.from, to:this.state.flightDetails.to, status:"request_sent", to_flight_name:flight.name})
         .then(response =>{
             console.log(response);
-            this.storeRequestinBC(flight,e);
-
         })
         .catch(function(error){
             console.log(error);
@@ -195,18 +196,22 @@ export default class CustomerList extends Component {
         </tr>
         );
         let alternateFlights = this.state.alternateFlights;
-        let flightRow = alternateFlights.map((flight)=>
-            <tr >
-                <td>{flight.name}</td>
-                <td>{flight.airline_name}</td>
-                <td>
-                <Button variant="dark" onClick={this.sendRequest.bind(this, flight)} >Change flight</Button>
-                </td>
-            </tr>
-        );
+        let flightRow ;
+        if(alternateFlights){
+          flightRow = alternateFlights.map((flight)=>
+              <tr >
+                  <td>{flight.name}</td>
+                  <td>{flight.airline_name}</td>
+                  <td>
+                  <Button variant="dark" onClick={this.sendRequest.bind(this, flight)} >Change flight</Button>
+                  </td>
+              </tr>
+          );
+        }
+
         return (
 
-            <div >
+            <div>
             <div className="jumbotron text-center">
                 <h1 >{this.state.airline_name}</h1>
                 <p> Get Customer for a flight</p>
@@ -255,6 +260,7 @@ export default class CustomerList extends Component {
                     </tr>
                 </thead>
                 <tbody>
+
                         {flightRow}
                 </tbody>
                 </table>

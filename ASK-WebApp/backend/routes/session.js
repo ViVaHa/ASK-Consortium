@@ -89,6 +89,16 @@ router.post('/deleteMapping', (req,res)=>{
 })
 
 
+router.post('/agentRemoval', (req,res)=>{
+  Agent.deleteMany({airline:req.body.airline})
+  .then((success)=>{
+    //console.log(success);
+    res.status(200).json(success);
+  })
+  .catch((err)=>{
+    res.status(400).json(err);
+  })
+})
 
 
 router.post('/login', (req,res)=>{

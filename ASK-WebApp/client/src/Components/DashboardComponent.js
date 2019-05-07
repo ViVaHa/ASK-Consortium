@@ -64,13 +64,19 @@ export default class Dashboard extends Component {
             .then(response =>{
                 if(response.status===200){
                   console.log("SEAT AVALIBILITY CHECKED");
-                  //console.log(r);
-                  this.updateTicket(r);
-                  //blockchain code
-                  //console.log(obj);
+                  axios.get("changeFlights/airlineMapping/", {params:{"airline": r.from_airline_name}})
+                  .then((response)=>{
+                    console.log(response);
+                    r.address = response.data.address;
+                    this.recordResponse(r, "accepted");
+                  })
+                  .catch((err)=>{
+                    console.log(err);
+                  })
                 }
             })
             .catch(function(error){
+                current.recordResponse(r,"rejected");
                 current.updateRequest(r, "rejected");
                 current.setState({modalText:"Not enough Seats Available", modalHeading:"Rejected"})
                 current.reject(r);
@@ -79,7 +85,6 @@ export default class Dashboard extends Component {
             this.setState({ show: true });
         }
         reject = ()=>{
-
             this.setState({showModal:true});
         }
         updateTicket(r){
@@ -151,15 +156,6 @@ export default class Dashboard extends Component {
                   axios.put('balancesTracker/updateBalances', nestedObj)
                   .then((response)=>{
                     console.log(response);
-                    axios.get("changeFlights/airlineMapping/", {params:{"airline": r.from_airline_name}})
-                    .then((response)=>{
-                      console.log(response);
-                      r.address = response.data.address;
-                      this.recordResponse(r, status);
-                    })
-                    .catch((err)=>{
-                      console.log(err);
-                    })
 
                     //current.setState({modalText:"Seat Changed successfully", modalHeading: "Success",showModal:true});
                   })
@@ -204,6 +200,15 @@ export default class Dashboard extends Component {
             if(event && event.blockHash!=this.hash){
               this.hash = event.blockHash;
               console.log(event);
+              if("accepted".localeCompare(status)==0){
+                console.log("Recorded success in Blockchain");
+                this.updateTicket(r);
+
+              }else{
+                console.log("Recorded reject in Blockchain");
+                this.updateRequest(r, "rejected");
+              }
+
               this.setState({ isRequested: true });
             }
           })
@@ -211,7 +216,6 @@ export default class Dashboard extends Component {
 
         rejectRequest(request, event){
             this.setState({modalText:"Rejecting request"})
-            this.updateRequest(request, "rejected");
             axios.get("changeFlights/airlineMapping/", {params:{"airline": request.from_airline_name}})
             .then((response)=>{
               console.log(response);

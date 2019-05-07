@@ -74,20 +74,23 @@ export default class CustomerRequestsComponent extends Component {
 
 
     getAlternateFlight() {
-        console.log(this.state);
-        axios.get("flight/alternateFlight/",
-        {params : {"airline_name" : this.state.airline_name,
-        from: this.state.from , to: this.state.to}})
-        .then(response =>{
-            console.log(response);
-            this.setState({alternateFlights:response.data})
-            console.log(this.state.alternateFlights);
+      console.log(this.state);
+      axios.get("flight/alternateFlight/",
+      {params : {"airline_name" : this.state.airline_name,
+      from: this.state.from , to: this.state.to}})
+      .then(response =>{
+        console.log(response);
+          console.log(response.data[0]);
+          var final = response.data[0] ;
+          for(var i =  1; i <response.data.length; i ++)
+             final = final.concat(response.data[i]);
+          this.setState({alternateFlights: final})
 
-        })
-        .catch(function(error){
-            console.log(error);
-        })
-        this.setState({ show: true });
+      })
+      .catch(function(error){
+          console.log(error);
+      })
+      this.setState({ show: true });
       }
 
 

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const key = require('../../keys');
 const flightDetailsAll = require('../models/flightDetails')
-
+const Mapping = require('../models/mapping').mappingConsortium;
 function getDB(airline_name){
     var flightDetails;
     if(airline_name=="Airline 1"){
@@ -123,24 +123,108 @@ router.post('/add', (req,res) =>{
     });
   })
 
+
+
+function getCounterParts(airline){
+  airlines=[];
+  if(airline.localeCompare("Airline 1")===0){
+
+    airlines.push("Airline 2");
+    airlines.push("Airline 3");
+  }else if(airline.localeCompare("Airline 2")===0){
+    airlines.push("Airline 1");
+    airlines.push("Airline 3");
+  }else if(airline.localeCompare("Airline 3")===0){
+    airlines.push("Airline 1");
+    airlines.push("Airline 2");
+  }
+  return airlines;
+}
+
   router.get('/alternateFlight', (req, res)=>{
     console.log("req for flight/alternateFlight", req.query);
-    var flightDetails=getAlternateDB(req.query.airline_name,1);
-    flightDetails.find({$and:[{from : req.query.from}, {to:req.query.to}, {airline_name:{$ne:req.query.airline_name}}]},function(err,details){
-        if(err){
-            console.log(err);
-        } else {
-            var flightDetails=getAlternateDB(req.query.airline_name,2);
-            flightDetails.find({$and:[{from : req.query.from}, {to:req.query.to}, {airline_name:{$ne:req.query.airline_name}}]},function(err,details2){
-                if(err){
-                    console.log(err);
-                } else {
-                    out= (details.concat(details2));
-                    res.json(out);
-                }
+    let airlines = getCounterParts(req.query.airline_name);
+    var final=[];
+    Mapping.findOne({airline:airlines[0]})
+    .then((details)=>{
+      if(details){
+        let flightDetails = getDB(airlines[0]);
+        flightDetails.find({$and: [{to:req.query.to}, {from:req.query.from}, {airline_name:{$eq:airlines[0]}}]})
+        .then((flightDetailsA)=>{
+            final.push(flightDetailsA);
+            console.log("det 1 : ",flightDetailsA);
+            Mapping.findOne({airline:airlines[1]})
+            .then((details)=>{
+              if(details){
+
+                let flightDetails = getDB(airlines[1]);
+                flightDetails.find({$and: [{to:req.query.to}, {from:req.query.from}, {airline_name:{$eq:airlines[1]}}]})
+                .then((flightDetailsB)=>{
+                  console.log("det 2 : ",flightDetailsB);
+
+                    final.push(flightDetailsB);
+                    res.json(final);
+                })
+              }else{
+                console.log(final);
+                res.json(final);
+              }
             });
-        }
+        })
+      }else{
+        Mapping.findOne({airline:airlines[1]})
+        .then((details)=>{
+          if(details){
+            let flightDetails = getDB(airlines[1]);
+            flightDetails.find({$and: [{to:req.query.to}, {from:req.query.from}, {airline_name:{$eq:airlines[1]}}]})
+            .then((flightDetailsB)=>{
+                final.push(flightDetailsB);
+                res.json(final);
+            })
+          }else{
+            console.log(final);
+            res.json(final);
+          }
+        });
+      }
     });
+
+
+    // let obj={};
+    // obj.airline = req.query.airline_name;
+    // if( req.query.airline_name == "Airline 1"){
+    //   Mapping.findOne({airline: "Airline 2"}).then((airline)=>{
+    //     if(airline){
+    //       console.log(airline);
+    //       var flightDetails = getDB("Airline 2");
+    //       flightDetails.find({$and:[{from : req.query.from}, {to:req.query.to}, {airline_name:{$ne:req.query.airline_name}}]},function(err,details){
+    //       }
+    //     }
+    //   }
+    // }
+
+
+
+
+
+
+
+    // var flightDetails=getAlternateDB(req.query.airline_name,1);
+    // flightDetails.find({$and:[{from : req.query.from}, {to:req.query.to}, {airline_name:{$ne:req.query.airline_name}}]},function(err,details){
+    //     if(err){
+    //         console.log(err);
+    //     } else {
+    //         var flightDetails=getAlternateDB(req.query.airline_name,2);
+    //         flightDetails.find({$and:[{from : req.query.from}, {to:req.query.to}, {airline_name:{$ne:req.query.airline_name}}]},function(err,details2){
+    //             if(err){
+    //                 console.log(err);
+    //             } else {
+    //                 out= (details.concat(details2));
+    //                 res.json(out);
+    //             }
+    //         });
+    //     }
+    // });
   });
 
   router.get('/checkAvailability', (req, res)=>{

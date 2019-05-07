@@ -79,6 +79,13 @@ deleteEverything=()=>{
     axios.post('session/deleteMapping', obj)
     .then((res)=>{
       console.log(res);
+      console.log("Mapping deleted");
+      axios.post('session/agentRemoval', obj).
+      then((res)=>{
+        console.log("Agents deleted");
+        alert("Removed"+ this.state.airline +"from Consortium");
+        window.location.reload();
+      })
     })
     .catch((err)=>{
       console.log(err);

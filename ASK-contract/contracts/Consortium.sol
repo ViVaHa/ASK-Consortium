@@ -30,6 +30,7 @@ contract Consortium{
         _;
     }
     function registerAirline()payable public isNotActive(msg.sender){
+        require(msg.sender!=chairperson, "You are the chairperson, you cannot register");
         airlines[msg.sender].isActive=true;
         //airlines[msg.sender].name = name;
         airlines[msg.sender].escrowAmount = msg.value;

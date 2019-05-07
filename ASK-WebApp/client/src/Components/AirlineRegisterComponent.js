@@ -55,7 +55,8 @@ export default class AirlineRegisterComponent extends Component{
       console.log(hash);
     })
     .on('error',(err)=>{
-      alert('Already Registered');
+      alert('Error cannot register with this account');
+      window.location.reload();
     })
     this.hash = null;
     this.consortiumInstance.events.Registered({filter: {fromBlock:'latest'}}, (error, event) => {
@@ -95,6 +96,7 @@ export default class AirlineRegisterComponent extends Component{
     axios.post('/session/map',obj)
     .then((res)=>{
       alert('Registration complete');
+      window.location.reload();
       console.log(res);
     })
     .catch((err)=>{
