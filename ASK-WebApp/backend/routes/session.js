@@ -77,6 +77,16 @@ router.post('/checkValid', (req,res)=>{
 })
 
 
+router.post('/deleteMapping', (req,res)=>{
+  Mapping.deleteOne({airline:req.body.airline})
+  .then((success)=>{
+    //console.log(success);
+    res.status(200).json(success);
+  })
+  .catch((err)=>{
+    res.status(400).json(err);
+  })
+})
 
 
 

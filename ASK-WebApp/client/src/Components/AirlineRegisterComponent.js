@@ -73,7 +73,7 @@ export default class AirlineRegisterComponent extends Component{
           if(res.status==200){
             console.log(res);
             this.mapAccount(acct);
-            //alert('Registration complete');
+
             //this.props.history.push('/airline_login');
 
             //window.location.reload();
@@ -94,6 +94,7 @@ export default class AirlineRegisterComponent extends Component{
     obj.address = acct;
     axios.post('/session/map',obj)
     .then((res)=>{
+      alert('Registration complete');
       console.log(res);
     })
     .catch((err)=>{

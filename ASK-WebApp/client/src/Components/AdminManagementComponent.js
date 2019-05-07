@@ -41,14 +41,6 @@ async unregister(){
     consortiumInstance.methods.unregisterAirline(address).send({from: acct})
     .on('transactionHash', (hash) => {
       console.log(hash);
-      // axios.put("http://localhost:5000/admin/update/", this.state)
-      // .then(response => {
-      //   //blockchain
-      //   window.location.reload();
-      // })
-      // .catch(error =>{
-      //   console.log(error);
-      // })
     })
     .on('error',(err)=>{
       alert(err);
@@ -63,6 +55,9 @@ async unregister(){
           console.log(response);
           //window.location.reload();
         })
+        .then(()=>{
+          this.deleteEverything();
+        })
         .catch(error =>{
           console.log(error);
         })
@@ -73,6 +68,27 @@ async unregister(){
   .catch((err)=>{
     console.log(err);
   })
+}
+
+deleteEverything=()=>{
+  console.log(this.state.airline);
+  let obj={};
+  obj.airline = this.state.airline;
+  axios.post('changeFlights/delete', obj)
+  .then((res)=>{
+    axios.post('session/deleteMapping', obj)
+    .then((res)=>{
+      console.log(res);
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+
+
 }
 
   render() {

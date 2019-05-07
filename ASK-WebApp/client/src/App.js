@@ -17,6 +17,8 @@ import BalancesComponent from './Components/BalancesComponent'
 import Web3 from 'web3';
 import myData from './CounterDetails.json';
 import data from './loadBlockChainData'
+import CustomerRequestsComponent from './Components/CustomerRequestsComponent'
+import CustomerComponent from './Components/CustomerComponent'
 //import CounterJSON from './Counter.json'
 const TruffleContract = require("truffle-contract");
 
@@ -142,6 +144,11 @@ class App extends React.Component {
               <li className={this.state.isAgentLoggedIn
                   ? 'nav-item'
                   : 'hidden'}>
+                <Link to={'/customer_requests'} className="nav-link">Customer Requests</Link>
+              </li>
+              <li className={this.state.isAgentLoggedIn
+                  ? 'nav-item'
+                  : 'hidden'}>
                 <Link to={'/airline_list'} className="nav-link">Customer List</Link>
               </li>
               <li className={this.state.isLoggedIn
@@ -153,6 +160,12 @@ class App extends React.Component {
                   ? 'nav-item'
                   : 'hidden'}>
                 <Link to={'/airline_logout'} className="nav-link">Airline Logout</Link>
+              </li>
+
+              <li className={this.state.isAgentLoggedIn
+                  ? 'hidden'
+                  : this.state.isLoggedIn ? 'hidden':'nav-item'}>
+                <Link to={'/flight_change'} className="nav-link">Request Flight Change</Link>
               </li>
 
             </ul>
@@ -168,7 +181,9 @@ class App extends React.Component {
           <Route path='/airline_logout' component={AirlineLogoutComponent}/>
           <Route path="/airline_list" component={TodosList} />
           <Route path="/dashboard" component={Dashboard} />
-        <Route path="/balances" component={BalancesComponent} />
+          <Route path="/customer_requests" component={CustomerRequestsComponent} />
+          <Route path="/balances" component={BalancesComponent} />
+        <Route path="/flight_change" component={CustomerComponent} />
         </Switch>
       </div>
     </Router>)

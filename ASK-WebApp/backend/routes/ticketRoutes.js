@@ -129,21 +129,18 @@ router.post('/add/', (req,res) =>{
 
   })
 
-
-
   router.get('/validateTicket', (req, res)=>{
     console.log(req.query);
-    let airline = req.body.airline_name;
+    let airline = req.query.airline_name;
     var model = getModel(airline);
-    model.findOne({$and : [{ airline_name : req.body.airline_name},{flight_name : req.body.flight_name}, {customer_name: req.body.customer_name} ]},function(err,details){
+    model.findOne({$and : [{ airline_name : req.query.airline_name},{flight_name : req.query.flight_name}, {customer_name: req.query.customer_name} ]},function(err,details){
         if(err){
             console.log(err);
-
         } else {
+
             if(details){
                 res.json(details);
             }
-
             else{
                 res.status(400).json({error:'No ticket found', errorCode : 3});
             }

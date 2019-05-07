@@ -75,6 +75,20 @@ router.post('/add', (req,res) =>{
 
 
 
+router.post('/delete', (req,res)=>{
+  requestTracker.deleteMany({$and:[
+    {$or:[{from_airline_name : req.body.airline}, {to_airline_name:req.body.airline}]},
+    {status:{$eq:'request_sent'}}
+  ]})
+  .then((result)=>{
+    //console.log(result);
+    res.status(200).json(result);
+  })
+  .catch((err)=>{
+    console.log(err);
+    res.status(400).json(err);
+  })
+})
 
 
 

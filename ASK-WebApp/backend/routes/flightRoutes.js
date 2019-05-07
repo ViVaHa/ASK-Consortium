@@ -75,7 +75,7 @@ router.post('/add', (req,res) =>{
         if(err){
             console.log(err);
         } else {
-            res.json(details);
+            res.status(200).json(details);
         }
     });
   });

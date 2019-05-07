@@ -36,6 +36,7 @@ contract Consortium{
         emit Registered(msg.sender, "Airline Registered");
     }
     function unregisterAirline(address payable airline) payable public onlyChairperson(msg.sender) isActive(airline){
+        require(airlines[airline].escrowAmount>=0, "You have pending balances, you cannot leave the consortium");
         airlines[airline].isActive=false;
         uint amount = airlines[airline].escrowAmount;
         airlines[airline].escrowAmount=0;

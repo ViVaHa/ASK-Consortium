@@ -15,6 +15,7 @@ const admin = require('./routes/admin');
 const balancesTracker = require('./routes/balancesTracker');
 const database = require('./DBConnections').database;
 const accounts = require('./functions/loadBlockChain')
+const customerRequests = require('./routes/customerRequests');
 const fs= require('fs');
 const path = require('path');
 
@@ -31,6 +32,7 @@ app.use("/changeFlights", requestTracker);
 app.use("/notifications", notifications);
 app.use("/admin", admin);
 app.use('/balancesTracker', balancesTracker);
+app.use('/customerRequests',customerRequests);
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 
