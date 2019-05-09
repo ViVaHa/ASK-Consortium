@@ -240,6 +240,7 @@ export default class Dashboard extends Component {
         <tr>
                 <td>{request.from_airline_name}</td>
               <td>{request.to_flight_name}</td>
+              <td>{request.customer_name}</td>
                 <td>{request.from}</td>
                 <td>{request.to}</td>
               <td><Button variant="info"  onClick={this.verify.bind(this, request)} disabled={!request.showVerify}>Verify</Button></td>
@@ -259,6 +260,7 @@ export default class Dashboard extends Component {
                     <tr>
                     <th scope="col">Airline</th>
                   <th scope="col">Requested Flight</th>
+                <th scope="col">Customer Name</th>
                     <th scope="col">from</th>
                     <th scope="col">to</th>
                   <th scope="col" >Verify and Respond</th>
