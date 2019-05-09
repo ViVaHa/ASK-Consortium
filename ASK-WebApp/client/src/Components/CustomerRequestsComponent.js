@@ -190,7 +190,7 @@ export default class CustomerRequestsComponent extends Component {
       extractDetails(customer,e){
         this.setState({to:customer.to});
         //this.setState({selectedCustomer:customer.customer_name , from:customer.from, to:customer.to});
-        this.setState({from :customer.from, selectedCustomer:customer.customer_name, to: customer.to, flight_name:customer.flight_name }, () => {
+        this.setState({from :customer.from, selectedCustomer:customer.customer_name, to: customer.to, flight_name:customer.flight_name, selectedFlight:customer.flight_name }, () => {
           this.getAlternateFlight();
         });
         //console.log(this.state);
