@@ -178,13 +178,12 @@ export default class Dashboard extends Component {
           this.account = await this.web3.eth.getAccounts();
           var acct = String(this.account);
           console.log(this.web3);
-          console.log(r.address);
-          var stringToHash = this.state.airline_name.concat(this.state.selectedFlight);
 
+          var stringToHash = this.state.airline_name.concat(this.state.selectedFlight);
+          //stringToHash = stringToHash.concat(status);
           stringToHash = stringToHash.concat(this.state.selectedCustomer);
-          //stringToHash = stringToHash.concat(flight.airline_name);
-          //stringToHash = stringToHash.concat(this.state.flightDetails.from);
-          //stringToHash = stringToHash.concat(flight.name);
+          var decision = status.localeCompare("accepted")==0? "1": "0";
+          stringToHash = stringToHash.concat(decision);
           let shaHash = this.web3.utils.stringToHex(stringToHash);
           shaHash = this.web3.utils.fromAscii(stringToHash).padEnd(66, '0');
           console.log(shaHash);
