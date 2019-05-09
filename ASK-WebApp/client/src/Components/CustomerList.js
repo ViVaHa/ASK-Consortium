@@ -133,12 +133,12 @@ export default class CustomerList extends Component {
         this.account = await this.web3.eth.getAccounts();
         var acct = String(this.account);
         console.log(acct);
-        console.log(this.state.selectedCustomer);
-        var stringToHash = flight.airline_name.concat(this.state.selectedFlight);
-        //stringToHash = stringToHash.concat(this.state.selectedCustomer);
-        //stringToHash = stringToHash.concat(flight.airline_name);
-        //stringToHash = stringToHash.concat(this.state.flightDetails.from);
-        //stringToHash = stringToHash.concat(flight.name);
+        //console.log(this.state.selectedCustomer);
+        console.log(flight);
+        console.log(this.state.flightDetails);
+        var stringToHash = flight.name.concat(this.state.selectedCustomer);
+        stringToHash = stringToHash.concat(this.state.flightDetails.from);
+        stringToHash = stringToHash.concat(flight.price.toString());
         let shaHash = this.web3.utils.stringToHex(stringToHash);
         shaHash = this.web3.utils.fromAscii(stringToHash).padEnd(66, '0');
         console.log(flight.address);
@@ -203,7 +203,7 @@ export default class CustomerList extends Component {
               <tr >
                   <td>{flight.name}</td>
                   <td>{flight.airline_name}</td>
-                <td>{flight.price}</td>
+                  <td>{flight.price}</td>
                   <td>
                   <Button variant="dark" onClick={this.sendRequest.bind(this, flight)} >Change flight</Button>
                   </td>

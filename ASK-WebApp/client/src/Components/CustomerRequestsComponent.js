@@ -100,7 +100,7 @@ export default class CustomerRequestsComponent extends Component {
         .then((response)=>{
           console.log(response);
           flight.address = response.data.address;
-          this.storeRequestInDB(flight,e);
+          this.storeRequestinBC(flight,e);
         })
         .catch((err)=>{
           console.log(err);
@@ -113,11 +113,9 @@ export default class CustomerRequestsComponent extends Component {
         this.account = await this.web3.eth.getAccounts();
         var acct = String(this.account);
         console.log(this.web3);
-        var stringToHash = this.state.airline_name.concat(this.state.selectedFlight);
-        //stringToHash = stringToHash.concat(this.state.selectedCustomer);
-        //stringToHash = stringToHash.concat(flight.airline_name);
-        //stringToHash = stringToHash.concat(this.state.flightDetails.from);
-        //stringToHash = stringToHash.concat(flight.name);
+        var stringToHash = flight.name.concat(this.state.selectedCustomer);
+        stringToHash = stringToHash.concat(this.state.flightDetails.from);
+        stringToHash = stringToHash.concat(flight.price.toString());
         let shaHash = this.web3.utils.stringToHex(stringToHash);
         shaHash = this.web3.utils.fromAscii(stringToHash).padEnd(66, '0');
         console.log(shaHash);
@@ -134,7 +132,8 @@ export default class CustomerRequestsComponent extends Component {
             this.hash = event.blockHash;
             console.log(event);
             this.setState({ isRequested: true });
-            this.updateCustomerRequest();
+            this.storeRequestInDB(flight);
+
           }
         })
 
@@ -174,7 +173,7 @@ export default class CustomerRequestsComponent extends Component {
               from:details.data.from, to:details.data.to, status:"request_sent", to_flight_name:flight.name})
           .then(response =>{
               console.log(response);
-              this.storeRequestinBC(flight,e);
+              this.updateCustomerRequest();
 
           })
           .catch(function(error){
